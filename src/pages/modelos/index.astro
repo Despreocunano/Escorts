@@ -3,9 +3,11 @@ import Layout from '../../layouts/Layout.astro';
 import ModelList from '../../components/ModelList';
 ---
 
-<Layout title="Nuestros Modelos">
-  <div class="container mx-auto px-4 py-16">
-    <h1 class="text-4xl font-bold text-center mb-12">Nuestros Modelos</h1>
-    <ModelList client:load />
+<Layout title="Modelos">
+  <div class="min-h-screen pt-32 px-6">
+    <div class="max-w-screen-lg mx-auto">
+      <h1 class="text-3xl font-light mb-16 text-center">MODELOS</h1>
+      <ModelList client:load />
+    </div>
   </div>
 </Layout>
