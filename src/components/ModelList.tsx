@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { supabase, hasSupabaseCredentials } from '../lib/supabase';
 
 interface Model {
@@ -18,6 +18,7 @@ export default function ModelList() {
   const [models, setModels] = useState<Model[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const modelsRef = useRef<Model[]>([]);
 
   useEffect(() => {
     async function fetchModels() {
@@ -34,7 +35,10 @@ export default function ModelList() {
           .order('name');
         
         if (error) throw error;
-        setModels(data || []);
+        
+        // Store models in ref to prevent re-renders
+        modelsRef.current = data || [];
+        setModels(modelsRef.current);
       } catch (error) {
         console.error('Error fetching models:', error);
         setError('fetch_error');
@@ -48,8 +52,19 @@ export default function ModelList() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className="flex flex-col animate-pulse">
+            <div className="aspect-[3/4] bg-gray-800 rounded-lg mb-4"></div>
+            <div className="flex flex-col items-center">
+              <div className="h-6 bg-gray-800 w-32 rounded mb-4"></div>
+              <div className="grid grid-cols-2 gap-2 w-full">
+                <div className="h-16 bg-gray-800 rounded"></div>
+                <div className="h-16 bg-gray-800 rounded"></div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -84,12 +99,13 @@ export default function ModelList() {
             <img
               src={model.main_image}
               alt={model.name}
-              loading="lazy"
-              decoding="async"
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              loading="eager"
+              decoding="sync"
+              style={{ contentVisibility: 'auto' }}
             />
             {model.videos && model.videos.length > 0 && (
-              <div className="absolute top-4 right-4 bg-black/50 p-2 rounded-full">
+              <div className="absolute top-4 right-4 bg-black/50 p-2 rounded-full z-10">
                 <svg 
                   xmlns="http://www.w3.org/2000/svg" 
                   viewBox="0 0 24 24" 
