@@ -1,4 +1,6 @@
 ---
+import Header from '../components/Header.astro';
+
 interface Props {
   title: string;
 }
@@ -17,18 +19,7 @@ const { title } = Astro.props;
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
   </head>
   <body class="bg-black">
-    <nav class="fixed w-full z-50">
-      <div class="container mx-auto px-6 py-6">
-        <div class="flex justify-between items-center">
-          <a href="/" class="text-white text-xl tracking-widest font-light">AGENCIA</a>
-          <div class="space-x-8 text-sm tracking-wider">
-            <a href="/modelos" class="text-white hover:text-gray-300 transition-colors">MODELOS</a>
-            <a href="/about" class="text-white hover:text-gray-300 transition-colors">NOSOTROS</a>
-            <a href="/contact" class="text-white hover:text-gray-300 transition-colors">CONTACTO</a>
-          </div>
-        </div>
-      </div>
-    </nav>
+    <Header />
     <main>
       <slot />
     </main>

@@ -1,0 +1,59 @@
+---
+---
+
+<header class="fixed w-full z-50 bg-black/80 backdrop-blur-lg">
+    <div class="container mx-auto px-6">
+      <nav class="flex items-center justify-between h-20">
+        <!-- Logo -->
+        <a href="/" class="text-white text-2xl tracking-[0.2em] font-light hover:text-gray-300 transition-colors">
+          AGENCIA
+        </a>
+  
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-12">
+          <a href="/modelos" class="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors">MODELOS</a>
+          <a href="/about" class="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors">NOSOTROS</a>
+          <a href="/contact" class="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors">CONTACTO</a>
+        </div>
+  
+        <!-- Mobile Menu Button -->
+        <button 
+          id="menuButton"
+          class="md:hidden text-white p-2 focus:outline-none"
+          aria-label="Toggle menu"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path 
+              stroke-linecap="round" 
+              stroke-linejoin="round" 
+              stroke-width="2" 
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </nav>
+  
+      <!-- Mobile Navigation -->
+      <div 
+        id="mobileMenu" 
+        class="hidden md:hidden py-4"
+      >
+        <div class="flex flex-col space-y-6 items-center">
+          <a href="/modelos" class="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors">MODELOS</a>
+          <a href="/about" class="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors">NOSOTROS</a>
+          <a href="/contact" class="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors">CONTACTO</a>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <script>
+    const menuButton = document.getElementById('menuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+  
+    if (menuButton && mobileMenu) {
+      menuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  </script>

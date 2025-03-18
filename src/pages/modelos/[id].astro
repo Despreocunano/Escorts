@@ -54,6 +54,24 @@ if (!isPlaceholder) {
 if (!model && !error && !isPlaceholder) {
   return Astro.redirect('/404');
 }
+
+const services = [
+  'Sesiones fotográficas',
+  'Desfiles de moda',
+  'Eventos corporativos',
+  'Campañas publicitarias',
+  'Catálogos de moda',
+  'Videos promocionales'
+];
+
+const attributes = [
+  'Profesional',
+  'Puntual',
+  'Fotogénica',
+  'Carismática',
+  'Versátil',
+  'Elegante'
+];
 ---
 
 <Layout title={model ? `${model.name} - Agencia de Modelos` : 'Error'}>
@@ -72,10 +90,10 @@ if (!model && !error && !isPlaceholder) {
   {model && (
     <div class="min-h-screen bg-black text-white pt-24">
       <div class="max-w-[1200px] mx-auto px-6">
-        <div class="flex flex-col md:flex-row gap-8 items-start">
+        <div class="flex flex-col md:flex-row gap-12 items-start">
           <!-- Profile Image Section -->
-          <div class="w-full md:w-[300px] flex-shrink-0">
-            <div class="rounded-full overflow-hidden aspect-square mb-6">
+          <div class="w-full md:w-[400px] flex-shrink-0">
+            <div class="rounded-2xl overflow-hidden aspect-[3/4] mb-6">
               <img
                 src={model.main_image}
                 alt={model.name}
@@ -84,63 +102,185 @@ if (!model && !error && !isPlaceholder) {
               />
             </div>
             <div class="text-center">
-              <h1 class="text-2xl font-light mb-2">{model.name}</h1>
-              <div class="flex justify-center gap-2 text-sm text-gray-400">
-                <span>{model.height}cm</span>
-                <span>•</span>
-                <span>{model.bust}-{model.waist}-{model.hips}</span>
+              <h1 class="text-3xl font-light mb-4">{model.name}</h1>
+              <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                  <p class="text-gray-400">Tarifa</p>
+                  <p class="text-white font-light">{model.rate ? `$${model.rate.toLocaleString()} CLP` : 'Consultar'}</p>
+                </div>
+                <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                  <p class="text-gray-400">Ubicación</p>
+                  <p class="text-white font-light">{model.area || 'No especificada'}</p>
+                </div>
               </div>
+              {model.whatsapp && (
+                <a
+                  href={`https://wa.me/${model.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-6 block w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  Contactar por WhatsApp
+                </a>
+              )}
             </div>
           </div>
 
           <!-- Details Section -->
-          <div class="flex-grow">
+          <div class="flex-grow space-y-12">
+            <!-- Description -->
+            {model.description && (
+              <div>
+                <p class="text-gray-300 leading-relaxed">{model.description}</p>
+              </div>
+            )}
+
+            <!-- Basic Info -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+              {model.age && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Edad</p>
+                  <p class="text-white">{model.age} años</p>
+                </div>
+              )}
+              {model.height && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Estatura</p>
+                  <p class="text-white">{model.height} cms</p>
+                </div>
+              )}
+              {model.weight && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Peso</p>
+                  <p class="text-white">{model.weight} kgs</p>
+                </div>
+              )}
+              {model.skin_tone && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Tez</p>
+                  <p class="text-white">{model.skin_tone}</p>
+                </div>
+              )}
+              {model.schedule && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Horario</p>
+                  <p class="text-white">{model.schedule}</p>
+                </div>
+              )}
+              {model.location && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Lugar</p>
+                  <p class="text-white">{model.location}</p>
+                </div>
+              )}
+            </div>
+
+            <!-- Measurements -->
+            {(model.bust || model.waist || model.hips) && (
+              <div>
+                <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Medidas</h2>
+                <div class="grid grid-cols-3 gap-4 text-center">
+                  {model.bust && (
+                    <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                      <p class="text-gray-400 text-sm mb-1">Busto</p>
+                      <p class="text-white">{model.bust} cm</p>
+                    </div>
+                  )}
+                  {model.waist && (
+                    <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                      <p class="text-gray-400 text-sm mb-1">Cintura</p>
+                      <p class="text-white">{model.waist} cm</p>
+                    </div>
+                  )}
+                  {model.hips && (
+                    <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                      <p class="text-gray-400 text-sm mb-1">Cadera</p>
+                      <p class="text-white">{model.hips} cm</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             <!-- Services -->
-            <div class="mb-12">
-              <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Mis Servicios</h2>
+            <div>
+              <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Servicios</h2>
               <div class="flex flex-wrap gap-2">
-                <span class="px-3 py-1 bg-[#2A2A2A] rounded text-sm">Cenas</span>
-                <span class="px-3 py-1 bg-[#2A2A2A] rounded text-sm">Eventos</span>
-                <span class="px-3 py-1 bg-[#2A2A2A] rounded text-sm">Viajes</span>
+                {services.map(service => (
+                  <span class="px-4 py-2 bg-[#1A1A1A] rounded-lg text-sm">{service}</span>
+                ))}
               </div>
             </div>
 
             <!-- Attributes -->
-            <div class="mb-12">
-              <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Mis Atributos</h2>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                <div class="space-y-2">
-                  <p class="text-gray-400">Altura: <span class="text-white">{model.height}cm</span></p>
-                  <p class="text-gray-400">Busto: <span class="text-white">{model.bust}cm</span></p>
-                  <p class="text-gray-400">Cintura: <span class="text-white">{model.waist}cm</span></p>
-                </div>
-                <div class="space-y-2">
-                  <p class="text-gray-400">Cadera: <span class="text-white">{model.hips}cm</span></p>
-                  <p class="text-gray-400">Calzado: <span class="text-white">{model.shoe_size}</span></p>
-                  <p class="text-gray-400">Ojos: <span class="text-white">{model.eyes}</span></p>
-                </div>
-                <div class="space-y-2">
-                  <p class="text-gray-400">Cabello: <span class="text-white">{model.hair}</span></p>
-                </div>
+            <div>
+              <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Atributos</h2>
+              <div class="flex flex-wrap gap-2">
+                {attributes.map(attribute => (
+                  <span class="px-4 py-2 bg-[#1A1A1A] rounded-lg text-sm">{attribute}</span>
+                ))}
               </div>
             </div>
 
-            <!-- Gallery -->
-            <div>
-              <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Galería</h2>
-              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {model.gallery.map((image: string, index: number) => (
-                  <div class="aspect-[3/4] bg-[#2A2A2A] overflow-hidden">
-                    <img
-                      src={image}
-                      alt={`${model.name} gallery`}
-                      class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                      loading={index < 6 ? "eager" : "lazy"}
-                      decoding="async"
-                    />
+            <!-- Media Gallery -->
+            <div class="space-y-8">
+              <!-- Photos -->
+              {model.gallery && model.gallery.length > 0 && (
+                <div>
+                  <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Fotos</h2>
+                  <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {model.gallery.map((image: string, index: number) => (
+                      <div class="aspect-[3/4] bg-[#1A1A1A] overflow-hidden rounded-lg">
+                        <img
+                          src={image}
+                          alt={`${model.name} gallery`}
+                          class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                          loading={index < 6 ? "eager" : "lazy"}
+                          decoding="async"
+                        />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
+
+              <!-- Videos -->
+              {model.videos && model.videos.length > 0 && (
+                <div>
+                  <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Videos</h2>
+                  <div class="grid grid-cols-2 gap-4">
+                    {model.videos.map((video: string) => (
+                      <div class="aspect-video bg-[#1A1A1A] rounded-lg overflow-hidden">
+                        <video
+                          src={video}
+                          controls
+                          class="w-full h-full object-cover"
+                          preload="none"
+                        ></video>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <!-- Stories -->
+              {model.stories && model.stories.length > 0 && (
+                <div>
+                  <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Stories</h2>
+                  <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+                    {model.stories.map((story: string) => (
+                      <div class="aspect-[9/16] bg-[#1A1A1A] rounded-lg overflow-hidden">
+                        <video
+                          src={story}
+                          controls
+                          class="w-full h-full object-cover"
+                          preload="none"
+                        ></video>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
