@@ -9,6 +9,9 @@ interface Model {
   waist: number;
   hips: number;
   main_image: string;
+  videos?: string[];
+  rate?: number;
+  area?: string;
 }
 
 export default function ModelList() {
@@ -71,26 +74,55 @@ export default function ModelList() {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {models.map((model) => (
-        <a 
-          key={model.id} 
-          href={`/modelos/${model.id}`}
-          className="group relative aspect-[3/4] overflow-hidden bg-gray-900"
-        >
-          <img
-            src={model.main_image}
-            alt={model.name}
-            loading="lazy"
-            decoding="async"
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-            <div className="absolute bottom-0 left-0 right-0 p-6">
-              <h3 className="text-white text-lg font-light tracking-wider">{model.name}</h3>
+        <div key={model.id} className="flex flex-col">
+          <a 
+            href={`/modelos/${model.id}`}
+            className="group relative aspect-[3/4] overflow-hidden bg-gray-900 rounded-lg mb-4"
+          >
+            <img
+              src={model.main_image}
+              alt={model.name}
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+            {model.videos && model.videos.length > 0 && (
+              <div className="absolute top-4 right-4 bg-black/50 p-2 rounded-full">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 24 24" 
+                  fill="currentColor" 
+                  className="w-5 h-5 text-white"
+                >
+                  <path 
+                    fillRule="evenodd" 
+                    d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" 
+                    clipRule="evenodd" 
+                  />
+                </svg>
+              </div>
+            )}
+          </a>
+          <div className="text-center">
+            <h3 className="text-white text-lg font-light tracking-wider mb-2">{model.name}</h3>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="bg-[#1A1A1A] py-2 px-3 rounded">
+                <p className="text-gray-400 text-xs mb-1">Tarifa</p>
+                <p className="text-white font-light">
+                  {model.rate ? `$${model.rate.toLocaleString()} CLP` : 'Consultar'}
+                </p>
+              </div>
+              <div className="bg-[#1A1A1A] py-2 px-3 rounded">
+                <p className="text-gray-400 text-xs mb-1">Zona</p>
+                <p className="text-white font-light">
+                  {model.area || 'No especificada'}
+                </p>
+              </div>
             </div>
           </div>
-        </a>
+        </div>
       ))}
     </div>
   );
