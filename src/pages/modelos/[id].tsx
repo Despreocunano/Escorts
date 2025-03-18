@@ -25,7 +25,7 @@ export default function ModelDetail() {
     async function fetchModel() {
       try {
         if (!hasSupabaseCredentials()) {
-          setError('Please configure Supabase credentials');
+          setError('credentials_missing');
           setLoading(false);
           return;
         }
@@ -40,7 +40,7 @@ export default function ModelDetail() {
         setModel(data);
       } catch (error) {
         console.error('Error fetching model:', error);
-        setError('Error loading model details');
+        setError('fetch_error');
       } finally {
         setLoading(false);
       }
@@ -59,10 +59,36 @@ export default function ModelDetail() {
     );
   }
 
-  if (error) {
+  if (error === 'credentials_missing') {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-2xl mx-auto">
+          <h2 className="text-2xl font-semibold mb-4">Configuración Requerida</h2>
+          <p className="text-gray-600 mb-6">
+            Para ver los detalles del modelo, necesitas configurar la conexión con Supabase. Por favor, sigue estos pasos:
+          </p>
+          <ol className="text-left text-gray-600 space-y-3 mb-6">
+            <li>1. Busca el botón "Connect to Supabase" en la parte superior derecha de la pantalla</li>
+            <li>2. Haz clic en el botón para iniciar la configuración</li>
+            <li>3. Sigue las instrucciones para conectar tu proyecto con Supabase</li>
+          </ol>
+          <div className="mt-6">
+            <a
+              href="/modelos"
+              className="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
+            >
+              Volver a Modelos
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error === 'fetch_error') {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
-        <p className="text-red-600">{error}</p>
+        <p className="text-red-600">Error al cargar los detalles del modelo. Por favor, intenta nuevamente más tarde.</p>
         <a
           href="/modelos"
           className="mt-4 inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"

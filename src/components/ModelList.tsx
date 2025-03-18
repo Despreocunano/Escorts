@@ -20,7 +20,7 @@ export default function ModelList() {
     async function fetchModels() {
       try {
         if (!hasSupabaseCredentials()) {
-          setError('Please configure Supabase credentials');
+          setError('credentials_missing');
           setLoading(false);
           return;
         }
@@ -34,7 +34,7 @@ export default function ModelList() {
         setModels(data || []);
       } catch (error) {
         console.error('Error fetching models:', error);
-        setError('Error loading models');
+        setError('fetch_error');
       } finally {
         setLoading(false);
       }
@@ -51,10 +51,29 @@ export default function ModelList() {
     );
   }
 
-  if (error) {
+  if (error === 'credentials_missing') {
+    return (
+      <div className="bg-white rounded-lg shadow-lg p-8 text-center max-w-2xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-4">Configuración Requerida</h2>
+        <p className="text-gray-600 mb-6">
+          Para ver los modelos, necesitas configurar la conexión con Supabase. Por favor, sigue estos pasos:
+        </p>
+        <ol className="text-left text-gray-600 space-y-3 mb-6">
+          <li>1. Busca el botón "Connect to Supabase" en la parte superior derecha de la pantalla</li>
+          <li>2. Haz clic en el botón para iniciar la configuración</li>
+          <li>3. Sigue las instrucciones para conectar tu proyecto con Supabase</li>
+        </ol>
+        <p className="text-sm text-gray-500">
+          Una vez configurado, podrás ver todos los modelos disponibles en esta página.
+        </p>
+      </div>
+    );
+  }
+
+  if (error === 'fetch_error') {
     return (
       <div className="text-center py-8">
-        <p className="text-red-600">{error}</p>
+        <p className="text-red-600">Error al cargar los modelos. Por favor, intenta nuevamente más tarde.</p>
       </div>
     );
   }
