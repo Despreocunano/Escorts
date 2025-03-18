@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ModelList from '../components/ModelList';
+import ModelList from '../components/ModelList.astro';
 import Stories from '../components/Stories';
 ---
 
@@ -82,7 +82,7 @@ import Stories from '../components/Stories';
   <!-- Models Grid -->
   <section class="bg-black py-12 px-6">
     <div class="max-w-[1200px] mx-auto">
-      <ModelList client:load />
+      <ModelList />
     </div>
   </section>
 </Layout>
