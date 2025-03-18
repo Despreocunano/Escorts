@@ -1,0 +1,315 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { supabase } from '../../../lib/supabase';
+
+const { data: { session } } = await supabase.auth.getSession();
+
+if (!session) {
+  return Astro.redirect('/admin/login');
+}
+
+const { data: adminCheck } = await supabase
+  .from('admins')
+  .select('id')
+  .eq('id', session.user.id)
+  .single();
+
+if (!adminCheck) {
+  const { error: signOutError } = await supabase.auth.signOut();
+  return Astro.redirect('/admin/login?error=unauthorized');
+}
+
+const { id } = Astro.params;
+let model = null;
+let error = null;
+
+if (id !== 'new') {
+  const { data, error: fetchError } = await supabase
+    .from('models')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (fetchError) {
+    error = fetchError;
+  } else {
+    model = data;
+  }
+}
+---
+
+<Layout title={model ? `Editar ${model.name}` : 'Nueva Modelo'}>
+  <div class="min-h-screen bg-black text-white pt-36">
+    <div class="max-w-3xl mx-auto px-6">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-light">{model ? `Editar ${model.name}` : 'Nueva Modelo'}</h1>
+        <a 
+          href="/admin"
+          class="text-gray-400 hover:text-white transition-colors"
+        >
+          Volver
+        </a>
+      </div>
+
+      <form id="modelForm" class="bg-[#1A1A1A] rounded-lg p-6">
+        <input type="hidden" name="id" value={model?.id || ''} />
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Basic Information -->
+          <div class="space-y-4">
+            <div>
+              <label for="name" class="block text-sm text-gray-400 mb-2">Nombre</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={model?.name || ''}
+                required
+                class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+              />
+            </div>
+
+            <div>
+              <label for="rate" class="block text-sm text-gray-400 mb-2">Tarifa</label>
+              <input
+                type="number"
+                id="rate"
+                name="rate"
+                value={model?.rate || ''}
+                class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+              />
+            </div>
+
+            <div>
+              <label for="area" class="block text-sm text-gray-400 mb-2">Zona</label>
+              <input
+                type="text"
+                id="area"
+                name="area"
+                value={model?.area || ''}
+                class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+              />
+            </div>
+
+            <div>
+              <label for="location" class="block text-sm text-gray-400 mb-2">Ubicación</label>
+              <input
+                type="text"
+                id="location"
+                name="location"
+                value={model?.location || ''}
+                class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+              />
+            </div>
+          </div>
+
+          <!-- Physical Characteristics -->
+          <div class="space-y-4">
+            <div>
+              <label for="age" class="block text-sm text-gray-400 mb-2">Edad</label>
+              <input
+                type="number"
+                id="age"
+                name="age"
+                value={model?.age || ''}
+                class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+              />
+            </div>
+
+            <div>
+              <label for="height" class="block text-sm text-gray-400 mb-2">Altura (cm)</label>
+              <input
+                type="number"
+                id="height"
+                name="height"
+                value={model?.height || ''}
+                class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+              />
+            </div>
+
+            <div>
+              <label for="weight" class="block text-sm text-gray-400 mb-2">Peso (kg)</label>
+              <input
+                type="number"
+                id="weight"
+                name="weight"
+                value={model?.weight || ''}
+                class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+              />
+            </div>
+
+            <div>
+              <label for="skin_tone" class="block text-sm text-gray-400 mb-2">Tez</label>
+              <input
+                type="text"
+                id="skin_tone"
+                name="skin_tone"
+                value={model?.skin_tone || ''}
+                class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Measurements -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          <div>
+            <label for="bust" class="block text-sm text-gray-400 mb-2">Busto (cm)</label>
+            <input
+              type="number"
+              id="bust"
+              name="bust"
+              value={model?.bust || ''}
+              class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+
+          <div>
+            <label for="waist" class="block text-sm text-gray-400 mb-2">Cintura (cm)</label>
+            <input
+              type="number"
+              id="waist"
+              name="waist"
+              value={model?.waist || ''}
+              class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+
+          <div>
+            <label for="hips" class="block text-sm text-gray-400 mb-2">Cadera (cm)</label>
+            <input
+              type="number"
+              id="hips"
+              name="hips"
+              value={model?.hips || ''}
+              class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+        </div>
+
+        <!-- Media -->
+        <div class="mt-6 space-y-4">
+          <div>
+            <label for="main_image" class="block text-sm text-gray-400 mb-2">Imagen Principal (URL)</label>
+            <input
+              type="url"
+              id="main_image"
+              name="main_image"
+              value={model?.main_image || ''}
+              required
+              class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+
+          <div>
+            <label for="gallery" class="block text-sm text-gray-400 mb-2">Galería (URLs, una por línea)</label>
+            <textarea
+              id="gallery"
+              name="gallery"
+              rows="3"
+              class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+            >{model?.gallery?.join('\n') || ''}</textarea>
+          </div>
+
+          <div>
+            <label for="videos" class="block text-sm text-gray-400 mb-2">Videos (URLs, uno por línea)</label>
+            <textarea
+              id="videos"
+              name="videos"
+              rows="3"
+              class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+            >{model?.videos?.join('\n') || ''}</textarea>
+          </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="mt-6">
+          <div>
+            <label for="description" class="block text-sm text-gray-400 mb-2">Descripción</label>
+            <textarea
+              id="description"
+              name="description"
+              rows="4"
+              class="w-full bg-black/50 text-white px-4 py-2 rounded border border-white/10 focus:outline-none focus:border-[#9F8E6A]"
+            >{model?.description || ''}</textarea>
+          </div>
+        </div>
+
+        <div class="mt-6">
+          <button
+            type="submit"
+            class="w-full bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white py-2 rounded transition-colors"
+          >
+            {model ? 'Guardar Cambios' : 'Crear Modelo'}
+          </button>
+        </div>
+
+        <div id="errorMessage" class="mt-4 text-red-400 text-sm text-center hidden"></div>
+      </form>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { supabase } from '../../../lib/supabase';
+
+  const form = document.getElementById('modelForm');
+  const errorMessage = document.getElementById('errorMessage');
+
+  if (form && errorMessage) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form as HTMLFormElement);
+      const modelData = {
+        name: formData.get('name'),
+        rate: formData.get('rate') ? parseInt(formData.get('rate') as string) : null,
+        area: formData.get('area'),
+        location: formData.get('location'),
+        age: formData.get('age') ? parseInt(formData.get('age') as string) : null,
+        height: formData.get('height') ? parseInt(formData.get('height') as string) : null,
+        weight: formData.get('weight') ? parseInt(formData.get('weight') as string) : null,
+        skin_tone: formData.get('skin_tone'),
+        bust: formData.get('bust') ? parseInt(formData.get('bust') as string) : null,
+        waist: formData.get('waist') ? parseInt(formData.get('waist') as string) : null,
+        hips: formData.get('hips') ? parseInt(formData.get('hips') as string) : null,
+        main_image: formData.get('main_image'),
+        gallery: (formData.get('gallery') as string)
+          .split('\n')
+          .map(url => url.trim())
+          .filter(url => url),
+        videos: (formData.get('videos') as string)
+          .split('\n')
+          .map(url => url.trim())
+          .filter(url => url),
+        description: formData.get('description')
+      };
+
+      try {
+        const modelId = formData.get('id');
+        let error;
+
+        if (modelId) {
+          // Update existing model
+          const { error: updateError } = await supabase
+            .from('models')
+            .update(modelData)
+            .eq('id', modelId);
+          error = updateError;
+        } else {
+          // Create new model
+          const { error: insertError } = await supabase
+            .from('models')
+            .insert(modelData);
+          error = insertError;
+        }
+
+        if (error) throw error;
+        window.location.href = '/admin';
+      } catch (error) {
+        errorMessage.textContent = error instanceof Error ? error.message : 'Error al guardar los cambios';
+        errorMessage.classList.remove('hidden');
+      }
+    });
+  }
+</script>

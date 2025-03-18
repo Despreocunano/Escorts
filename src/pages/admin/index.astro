@@ -1,0 +1,126 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+
+const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+if (!session) {
+  return Astro.redirect('/admin/login');
+}
+
+const { data: adminCheck } = await supabase
+  .from('admins')
+  .select('id')
+  .eq('id', session.user.id)
+  .single();
+
+if (!adminCheck) {
+  const { error: signOutError } = await supabase.auth.signOut();
+  return Astro.redirect('/admin/login?error=unauthorized');
+}
+
+const { data: models } = await supabase
+  .from('models')
+  .select('*')
+  .order('name');
+---
+
+<Layout title="Panel de Administración">
+  <div class="min-h-screen bg-black text-white pt-36">
+    <div class="max-w-[1200px] mx-auto px-6">
+      <div class="flex justify-between items-center mb-8">
+        <h1 class="text-2xl font-light">Panel de Administración</h1>
+        <div class="flex gap-4">
+          <a 
+            href="/admin/models/new" 
+            class="bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white px-4 py-2 rounded transition-colors"
+          >
+            Nueva Modelo
+          </a>
+          <button 
+            id="logoutButton"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded transition-colors"
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-[#1A1A1A] rounded-lg p-6">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-white/10">
+                <th class="text-left py-3 px-4">Nombre</th>
+                <th class="text-left py-3 px-4">Tarifa</th>
+                <th class="text-left py-3 px-4">Ubicación</th>
+                <th class="text-left py-3 px-4">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {models?.map((model) => (
+                <tr class="border-b border-white/10 hover:bg-white/5">
+                  <td class="py-3 px-4">{model.name}</td>
+                  <td class="py-3 px-4">
+                    {model.rate ? `$${model.rate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` : 'Consultar'}
+                  </td>
+                  <td class="py-3 px-4">{model.area || 'No especificada'}</td>
+                  <td class="py-3 px-4">
+                    <div class="flex gap-2">
+                      <a 
+                        href={`/admin/models/${model.id}`}
+                        class="text-blue-400 hover:text-blue-300 transition-colors"
+                      >
+                        Editar
+                      </a>
+                      <button 
+                        class="text-red-400 hover:text-red-300 transition-colors"
+                        data-delete-id={model.id}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { supabase } from '../../lib/supabase';
+
+  // Handle logout
+  const logoutButton = document.getElementById('logoutButton');
+  if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = '/admin/login';
+    });
+  }
+
+  // Handle model deletion
+  document.querySelectorAll('[data-delete-id]').forEach(button => {
+    button.addEventListener('click', async () => {
+      const modelId = button.getAttribute('data-delete-id');
+      if (!modelId) return;
+
+      if (confirm('¿Estás seguro de que deseas eliminar esta modelo? Esta acción no se puede deshacer.')) {
+        const { error } = await supabase
+          .from('models')
+          .delete()
+          .eq('id', modelId);
+
+        if (error) {
+          alert('Error al eliminar la modelo');
+        } else {
+          window.location.reload();
+        }
+      }
+    });
+  });
+</script>
