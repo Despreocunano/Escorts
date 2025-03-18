@@ -9,7 +9,4 @@ export default defineConfig({
   adapter: vercel({
     analytics: true,
   }),
-  experimental: {
-    staticMode: true
-  }
 });
