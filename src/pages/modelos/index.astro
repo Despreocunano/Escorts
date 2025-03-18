@@ -1,13 +1,13 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import ModelList from '../../components/ModelList.astro';
+import ModelList from '../../components/ModelList';
 ---
 
 <Layout title="Modelos">
   <div class="min-h-screen pt-32 px-6">
     <div class="max-w-screen-lg mx-auto">
       <h1 class="text-3xl font-light mb-16 text-center">MODELOS</h1>
-      <ModelList />
+      <ModelList client:load />
     </div>
   </div>
 </Layout>
