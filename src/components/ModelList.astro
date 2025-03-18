@@ -14,25 +14,13 @@ interface Model {
   area?: string;
 }
 
-let models: Model[] = [];
-let error: string | null = null;
+// This will run at build time only
+const { data: models = [], error: supabaseError } = await supabase
+  .from('models')
+  .select('*')
+  .order('name');
 
-try {
-  if (!hasSupabaseCredentials()) {
-    error = 'credentials_missing';
-  } else {
-    const { data, error: supabaseError } = await supabase
-      .from('models')
-      .select('*')
-      .order('name');
-    
-    if (supabaseError) throw supabaseError;
-    models = data || [];
-  }
-} catch (e) {
-  console.error('Error fetching models:', e);
-  error = 'fetch_error';
-}
+const error = !hasSupabaseCredentials() ? 'credentials_missing' : supabaseError ? 'fetch_error' : null;
 ---
 
 {error === 'credentials_missing' && (
@@ -52,7 +40,7 @@ try {
 
 {!error && (
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-    {models.map((model) => (
+    {models?.map((model) => (
       <div class="flex flex-col">
         <a 
           href={`/modelos/${model.id}`}
@@ -63,22 +51,6 @@ try {
             alt={model.name}
             class="h-full w-full object-cover"
           />
-          {model.videos && model.videos.length > 0 && (
-            <div class="absolute top-4 right-4 bg-black/50 p-2 rounded-full z-10">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                fill="currentColor" 
-                class="w-5 h-5 text-white"
-              >
-                <path 
-                  fill-rule="evenodd" 
-                  d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" 
-                  clip-rule="evenodd" 
-                />
-              </svg>
-            </div>
-          )}
         </a>
         <div class="text-center">
           <h3 class="text-white text-lg font-light tracking-wider mb-2">{model.name}</h3>
