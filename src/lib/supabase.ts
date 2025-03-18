@@ -1,13 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.SUPABASE_URL;
-const supabaseKey = import.meta.env.SUPABASE_ANON_KEY;
+// These variables will be available at runtime in the browser
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
-  throw new Error(
-    'Las variables de entorno SUPABASE_URL y SUPABASE_ANON_KEY son requeridas. ' +
-    'Por favor, haz clic en el botón "Connect to Supabase" en la parte superior derecha para configurar la conexión.'
+  console.warn(
+    'Supabase credentials not found. Please make sure you have connected to Supabase using the "Connect to Supabase" button.'
   );
 }
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+export const supabase = createClient(supabaseUrl || '', supabaseKey || '');
