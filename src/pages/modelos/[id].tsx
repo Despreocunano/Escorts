@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import Layout from '../../layouts/Layout.astro';
-import { supabase } from '../../lib/supabase';
+import { supabase, hasSupabaseCredentials } from '../../lib/supabase';
 
 interface Model {
   id: string;
@@ -19,11 +18,18 @@ interface Model {
 export default function ModelDetail() {
   const [model, setModel] = useState<Model | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const id = window.location.pathname.split('/').pop();
 
   useEffect(() => {
     async function fetchModel() {
       try {
+        if (!hasSupabaseCredentials()) {
+          setError('Please configure Supabase credentials');
+          setLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from('models')
           .select('*')
@@ -34,7 +40,7 @@ export default function ModelDetail() {
         setModel(data);
       } catch (error) {
         console.error('Error fetching model:', error);
-        window.location.href = '/404';
+        setError('Error loading model details');
       } finally {
         setLoading(false);
       }
@@ -49,6 +55,20 @@ export default function ModelDetail() {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <p className="text-red-600">{error}</p>
+        <a
+          href="/modelos"
+          className="mt-4 inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
+        >
+          Volver a Modelos
+        </a>
       </div>
     );
   }

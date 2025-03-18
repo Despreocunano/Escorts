@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, hasSupabaseCredentials } from '../lib/supabase';
 
 interface Model {
   id: string;
@@ -14,10 +14,17 @@ interface Model {
 export default function ModelList() {
   const [models, setModels] = useState<Model[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchModels() {
       try {
+        if (!hasSupabaseCredentials()) {
+          setError('Please configure Supabase credentials');
+          setLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from('models')
           .select('*')
@@ -27,6 +34,7 @@ export default function ModelList() {
         setModels(data || []);
       } catch (error) {
         console.error('Error fetching models:', error);
+        setError('Error loading models');
       } finally {
         setLoading(false);
       }
@@ -39,6 +47,14 @@ export default function ModelList() {
     return (
       <div className="flex justify-center items-center min-h-[200px]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-600">{error}</p>
       </div>
     );
   }
