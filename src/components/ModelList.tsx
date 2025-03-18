@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase, hasSupabaseCredentials } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 interface Model {
   id: string;
@@ -22,12 +22,6 @@ export default function ModelList() {
   useEffect(() => {
     async function fetchModels() {
       try {
-        if (!hasSupabaseCredentials()) {
-          setError('credentials_missing');
-          setLoading(false);
-          return;
-        }
-
         const { data, error } = await supabase
           .from('models')
           .select('*')
@@ -54,24 +48,13 @@ export default function ModelList() {
             <div className="aspect-[3/4] bg-gray-800 rounded-lg mb-4"></div>
             <div className="flex flex-col items-center">
               <div className="h-6 bg-gray-800 w-32 rounded mb-4"></div>
-              <div className="grid grid-cols-2 gap-2 w-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
                 <div className="h-16 bg-gray-800 rounded"></div>
                 <div className="h-16 bg-gray-800 rounded"></div>
               </div>
             </div>
           </div>
         ))}
-      </div>
-    );
-  }
-
-  if (error === 'credentials_missing') {
-    return (
-      <div className="text-center max-w-2xl mx-auto">
-        <h2 className="text-white text-xl font-light mb-4 tracking-wider">CONFIGURACIÓN REQUERIDA</h2>
-        <p className="text-gray-400 text-sm">
-          Para ver los modelos, necesitas configurar la conexión con Supabase.
-        </p>
       </div>
     );
   }
@@ -114,18 +97,18 @@ export default function ModelList() {
               </div>
             )}
           </a>
-          <div className="text-center">
-            <h3 className="text-white text-lg font-light tracking-wider mb-2">{model.name}</h3>
-            <div className="grid grid-cols-2 gap-2 text-sm">
-              <div className="bg-[#1A1A1A] py-2 px-3 rounded">
+          <div className="flex flex-col items-center">
+            <h3 className="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors mb-4">{model.name}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
+              <div className="bg-[#1A1A1A] py-3 px-4 rounded text-center">
                 <p className="text-gray-400 text-xs mb-1">Tarifa</p>
-                <p className="text-white font-light">
-                  {model.rate ? `$${model.rate.toLocaleString()} CLP` : 'Consultar'}
+                <p className="text-white text-sm">
+                  {model.rate ? `$${model.rate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` : 'Consultar'}
                 </p>
               </div>
-              <div className="bg-[#1A1A1A] py-2 px-3 rounded">
+              <div className="bg-[#1A1A1A] py-3 px-4 rounded text-center">
                 <p className="text-gray-400 text-xs mb-1">Zona</p>
-                <p className="text-white font-light">
+                <p className="text-white text-sm">
                   {model.area || 'No especificada'}
                 </p>
               </div>
