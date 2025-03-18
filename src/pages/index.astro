@@ -1,7 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ModelList from '../components/ModelList.astro';
-import Stories from '../components/Stories';
+import ModelList from '../components/ModelList';
 ---
 
 <Layout title="Agencia de Modelos">
@@ -20,69 +19,53 @@ import Stories from '../components/Stories';
     </div>
 
     <!-- Content -->
-    <div class="relative z-10 flex-1 flex flex-col px-6">
-      <!-- Main Content (centered) -->
-      <div class="flex-1 flex flex-col items-center justify-center">
-        <h1 class="text-center mb-6">
-          <span class="block text-3xl md:text-5xl text-white font-light mb-3">Encuentra tu</span>
-          <span class="block text-4xl md:text-7xl text-white font-light">Experiencia Perfecta</span>
-        </h1>
+    <div class="relative z-10 flex-1 flex flex-col items-center justify-center px-6">
+      <h1 class="text-center mb-12">
+        <span class="block text-3xl md:text-5xl text-white font-light mb-3">Encuentra tu</span>
+        <span class="block text-4xl md:text-7xl text-white font-light">Experiencia Perfecta</span>
+      </h1>
 
-        <!-- Search Bar -->
-        <div class="w-full max-w-3xl mb-6">
-          <div class="relative">
-            <input 
-              type="text" 
-              placeholder="Escribe lo que buscas, servicio, ubicación, contextura, apariencia, etc..." 
-              class="w-full bg-black/80 backdrop-blur-md text-white px-6 py-4 rounded-lg border border-white/20 pr-12 focus:outline-none focus:border-[#9F8E6A]"
-            />
-            <button class="absolute right-4 top-1/2 -translate-y-1/2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- Filter Buttons -->
-        <div class="flex flex-wrap justify-center gap-3">
-          <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
-            CON VIDEO
-          </button>
-          <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
-            CARA VISIBLE
-          </button>
-          <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
-            CON EXPERIENCIAS
-          </button>
-          <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
-            DISPONIBLE AHORA
-          </button>
-          <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
-            EN PROMOCIÓN
+      <!-- Search Bar -->
+      <div class="w-full max-w-3xl mb-12">
+        <div class="relative">
+          <input 
+            type="text" 
+            placeholder="Escribe lo que buscas, servicio, ubicación, contextura, apariencia, etc..." 
+            class="w-full bg-black/80 backdrop-blur-md text-white px-6 py-4 rounded-lg border border-white/20 pr-12 focus:outline-none focus:border-[#9F8E6A]"
+          />
+          <button class="absolute right-4 top-1/2 -translate-y-1/2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
           </button>
         </div>
       </div>
 
-      <!-- Stories Section (at bottom) -->
-      <div class="w-full max-w-[1200px] mx-auto mb-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-white text-xl font-light tracking-wider">ÚLTIMAS HISTORIAS</h2>
-          <a href="/historias" class="text-white/70 hover:text-white text-sm tracking-wider transition-colors">
-            VER TODAS
-            <span class="ml-2">→</span>
-          </a>
-        </div>
-        
-        <Stories client:load />
+      <!-- Filter Buttons -->
+      <div class="flex flex-wrap justify-center gap-3">
+        <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
+          CON VIDEO
+        </button>
+        <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
+          CARA VISIBLE
+        </button>
+        <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
+          CON EXPERIENCIAS
+        </button>
+        <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
+          DISPONIBLE AHORA
+        </button>
+        <button class="px-6 py-2.5 bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white rounded text-sm tracking-wider transition-colors">
+          EN PROMOCIÓN
+        </button>
       </div>
     </div>
   </div>
 
   <!-- Models Grid -->
-  <section class="bg-black py-12 px-6">
+  <section class="bg-black py-24 px-6">
     <div class="max-w-[1200px] mx-auto">
-      <ModelList />
+      <ModelList client:load />
     </div>
   </section>
 </Layout>
