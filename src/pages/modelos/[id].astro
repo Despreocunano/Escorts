@@ -1,0 +1,66 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { supabase } from '../../lib/supabase';
+
+const { id } = Astro.params;
+
+const { data: model, error } = await supabase
+  .from('models')
+  .select('*')
+  .eq('id', id)
+  .single();
+
+if (error) {
+  return Astro.redirect('/404');
+}
+---
+
+<Layout title={`${model.name} - Agencia de Modelos`}>
+  <div class="container mx-auto px-4 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="space-y-4">
+        <img
+          src={model.main_image}
+          alt={model.name}
+          class="w-full h-[600px] object-cover rounded-lg shadow-lg"
+        />
+        <div class="grid grid-cols-3 gap-4">
+          {model.gallery.map((image: string) => (
+            <img
+              src={image}
+              alt={`${model.name} gallery`}
+              class="w-full h-32 object-cover rounded-lg shadow-md hover:opacity-75 transition-opacity cursor-pointer"
+            />
+          ))}
+        </div>
+      </div>
+      
+      <div class="space-y-6">
+        <h1 class="text-4xl font-bold">{model.name}</h1>
+        
+        <div class="grid grid-cols-2 gap-4 text-lg">
+          <div class="space-y-2">
+            <p><span class="font-semibold">Altura:</span> {model.height}cm</p>
+            <p><span class="font-semibold">Busto:</span> {model.bust}cm</p>
+            <p><span class="font-semibold">Cintura:</span> {model.waist}cm</p>
+            <p><span class="font-semibold">Cadera:</span> {model.hips}cm</p>
+          </div>
+          <div class="space-y-2">
+            <p><span class="font-semibold">Calzado:</span> {model.shoe_size}</p>
+            <p><span class="font-semibold">Ojos:</span> {model.eyes}</p>
+            <p><span class="font-semibold">Cabello:</span> {model.hair}</p>
+          </div>
+        </div>
+
+        <div class="pt-6">
+          <a
+            href="/modelos"
+            class="inline-block bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors"
+          >
+            Volver a Modelos
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

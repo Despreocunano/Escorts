@@ -1,0 +1,51 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { supabase } from '../lib/supabase';
+
+// Fetch models from Supabase
+const { data: models, error } = await supabase
+  .from('models')
+  .select('*')
+  .order('name');
+
+if (error) {
+  console.error('Error fetching models:', error);
+}
+---
+
+<Layout title="Agencia de Modelos">
+  <section class="h-screen flex items-center justify-center bg-[url('/hero-bg.jpg')] bg-cover bg-center">
+    <div class="text-center text-white">
+      <h1 class="text-6xl font-bold mb-4">Agencia de Modelos</h1>
+      <p class="text-xl">Descubre nuestro talento</p>
+    </div>
+  </section>
+
+  <section class="py-16 container mx-auto px-4">
+    <h2 class="text-4xl font-bold text-center mb-12">Modelos Destacados</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {models?.map((model) => (
+        <div class="group relative overflow-hidden rounded-lg shadow-lg transition-transform hover:scale-105">
+          <img
+            src={model.main_image}
+            alt={model.name}
+            class="h-[400px] w-full object-cover"
+          />
+          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
+            <h3 class="text-xl font-semibold text-white">{model.name}</h3>
+            <div class="mt-2 text-sm text-gray-200">
+              <p>Altura: {model.height}cm</p>
+              <p>Medidas: {model.bust}-{model.waist}-{model.hips}</p>
+            </div>
+            <a
+              href={`/modelos/${model.id}`}
+              class="mt-4 inline-block rounded-full bg-white px-6 py-2 text-sm font-medium text-black transition-colors hover:bg-gray-100"
+            >
+              Ver Perfil
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>
