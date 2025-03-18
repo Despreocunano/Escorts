@@ -88,7 +88,7 @@ const attributes = [
   )}
 
   {model && (
-    <div class="min-h-screen bg-black text-white pt-24">
+    <div class="min-h-screen bg-black text-white pt-36">
       <div class="max-w-[1200px] mx-auto px-6">
         <div class="flex flex-col md:flex-row gap-12 items-start mb-24">
           <!-- Profile Image Section -->
@@ -226,7 +226,7 @@ const attributes = [
         {((model.videos && model.videos.length > 0) || (model.gallery && model.gallery.length > 0)) && (
           <div>
             <h2 class="text-lg font-light mb-8 uppercase tracking-wider">Galería</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
               {/* Videos first */}
               {model.videos && model.videos.map((video: string, index: number) => (
                 <div class="aspect-[3/4] bg-[#1A1A1A] overflow-hidden rounded-lg relative group">
@@ -261,8 +261,8 @@ const attributes = [
                   <img
                     src={image}
                     alt={`${model.name} gallery`}
-                    class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                    loading={index < 6 ? "eager" : "lazy"}
+                    class="w-full h-full object-cover"
+                    loading={index < 8 ? "eager" : "lazy"}
                     decoding="async"
                   />
                 </div>

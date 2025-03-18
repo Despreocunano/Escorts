@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase, hasSupabaseCredentials } from '../lib/supabase';
 
 interface Model {
@@ -18,11 +18,8 @@ export default function ModelList() {
   const [models, setModels] = useState<Model[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const modelsRef = useRef<Model[]>([]);
 
   useEffect(() => {
-    let mounted = true;
-
     async function fetchModels() {
       try {
         if (!hasSupabaseCredentials()) {
@@ -37,28 +34,16 @@ export default function ModelList() {
           .order('name');
         
         if (error) throw error;
-
-        // Only update state if component is still mounted
-        if (mounted) {
-          const modelData = data || [];
-          modelsRef.current = modelData;
-          setModels(modelData);
-          setLoading(false);
-        }
+        setModels(data || []);
       } catch (error) {
         console.error('Error fetching models:', error);
-        if (mounted) {
-          setError('fetch_error');
-          setLoading(false);
-        }
+        setError('fetch_error');
+      } finally {
+        setLoading(false);
       }
     }
 
     fetchModels();
-
-    return () => {
-      mounted = false;
-    };
   }, []);
 
   if (loading) {
@@ -101,17 +86,16 @@ export default function ModelList() {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {modelsRef.current.map((model) => (
+      {models.map((model) => (
         <div key={model.id} className="flex flex-col">
           <a 
             href={`/modelos/${model.id}`}
-            className="group relative aspect-[3/4] overflow-hidden bg-gray-900 rounded-lg mb-4"
+            className="relative aspect-[3/4] bg-gray-900 rounded-lg mb-4 overflow-hidden"
           >
             <img
               src={model.main_image}
               alt={model.name}
-              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              style={{ willChange: 'transform' }}
+              className="h-full w-full object-cover"
             />
             {model.videos && model.videos.length > 0 && (
               <div className="absolute top-4 right-4 bg-black/50 p-2 rounded-full z-10">
