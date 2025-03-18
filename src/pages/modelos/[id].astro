@@ -232,13 +232,16 @@ const attributes = [
                 <div class="aspect-[3/4] bg-[#1A1A1A] overflow-hidden rounded-lg relative group">
                   <video
                     src={video}
-                    class="w-full h-full object-cover cursor-pointer"
-                    preload="none"
+                    class="w-full h-full object-cover"
+                    preload="metadata"
                     poster={model.main_image}
-                    onclick="this.paused ? this.play() : this.pause()"
                   >
                   </video>
-                  <div class="absolute inset-0 flex items-center justify-center bg-black/50">
+                  <button 
+                    class="absolute inset-0 flex items-center justify-center bg-black/50 group-hover:bg-black/30 transition-colors"
+                    onclick={`document.querySelector('[data-video-index="${index}"]').play()`}
+                    data-play-button={index}
+                  >
                     <svg 
                       xmlns="http://www.w3.org/2000/svg" 
                       viewBox="0 0 24 24" 
@@ -251,7 +254,7 @@ const attributes = [
                         clip-rule="evenodd" 
                       />
                     </svg>
-                  </div>
+                  </button>
                 </div>
               ))}
               
@@ -277,20 +280,31 @@ const attributes = [
 
 <script>
   // Handle video play/pause and overlay visibility
-  document.querySelectorAll('video').forEach(video => {
-    const overlay = video.parentElement?.querySelector('div');
-    if (!overlay) return;
+  document.querySelectorAll('video').forEach((video, index) => {
+    video.setAttribute('data-video-index', index.toString());
+    
+    const playButton = document.querySelector(`[data-play-button="${index}"]`);
+    if (!playButton) return;
 
     video.addEventListener('play', () => {
-      overlay.style.opacity = '0';
+      playButton.classList.add('opacity-0');
     });
 
     video.addEventListener('pause', () => {
-      overlay.style.opacity = '1';
+      playButton.classList.remove('opacity-0');
     });
 
     video.addEventListener('ended', () => {
-      overlay.style.opacity = '1';
+      playButton.classList.remove('opacity-0');
+    });
+
+    // Add click handler to the video itself to toggle play/pause
+    video.addEventListener('click', () => {
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
     });
   });
 </script>
