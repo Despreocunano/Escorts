@@ -21,6 +21,8 @@ export default function ModelList() {
   const modelsRef = useRef<Model[]>([]);
 
   useEffect(() => {
+    let mounted = true;
+
     async function fetchModels() {
       try {
         if (!hasSupabaseCredentials()) {
@@ -35,19 +37,28 @@ export default function ModelList() {
           .order('name');
         
         if (error) throw error;
-        
-        // Store models in ref to prevent re-renders
-        modelsRef.current = data || [];
-        setModels(modelsRef.current);
+
+        // Only update state if component is still mounted
+        if (mounted) {
+          const modelData = data || [];
+          modelsRef.current = modelData;
+          setModels(modelData);
+          setLoading(false);
+        }
       } catch (error) {
         console.error('Error fetching models:', error);
-        setError('fetch_error');
-      } finally {
-        setLoading(false);
+        if (mounted) {
+          setError('fetch_error');
+          setLoading(false);
+        }
       }
     }
 
     fetchModels();
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   if (loading) {
@@ -90,7 +101,7 @@ export default function ModelList() {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {models.map((model) => (
+      {modelsRef.current.map((model) => (
         <div key={model.id} className="flex flex-col">
           <a 
             href={`/modelos/${model.id}`}
@@ -100,9 +111,7 @@ export default function ModelList() {
               src={model.main_image}
               alt={model.name}
               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-              loading="eager"
-              decoding="sync"
-              style={{ contentVisibility: 'auto' }}
+              style={{ willChange: 'transform' }}
             />
             {model.videos && model.videos.length > 0 && (
               <div className="absolute top-4 right-4 bg-black/50 p-2 rounded-full z-10">
