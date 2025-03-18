@@ -80,6 +80,7 @@ if (!model && !error && !isPlaceholder) {
                 src={model.main_image}
                 alt={model.name}
                 class="w-full h-full object-cover"
+                fetchpriority="high"
               />
             </div>
             <div class="text-center">
@@ -128,12 +129,14 @@ if (!model && !error && !isPlaceholder) {
             <div>
               <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Galería</h2>
               <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {model.gallery.map((image: string) => (
+                {model.gallery.map((image: string, index: number) => (
                   <div class="aspect-[3/4] bg-[#2A2A2A] overflow-hidden">
                     <img
                       src={image}
                       alt={`${model.name} gallery`}
                       class="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                      loading={index < 6 ? "eager" : "lazy"}
+                      decoding="async"
                     />
                   </div>
                 ))}
@@ -145,4 +148,3 @@ if (!model && !error && !isPlaceholder) {
     </div>
   )}
 </Layout>
-```
