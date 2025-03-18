@@ -5,8 +5,8 @@ import vercel from '@astrojs/vercel/static';
 
 export default defineConfig({
   integrations: [tailwind(), react()],
-  output: 'static',
+  output: 'hybrid', // Change from 'static' to 'hybrid'
   adapter: vercel({
     analytics: true,
-  }),
+  })
 });

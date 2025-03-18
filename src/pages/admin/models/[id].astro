@@ -2,6 +2,21 @@
 import Layout from '../../../layouts/Layout.astro';
 import { supabase } from '../../../lib/supabase';
 
+export async function getStaticPaths() {
+  const { data: models } = await supabase
+    .from('models')
+    .select('id');
+
+  return [
+    // Add a path for the "new" model form
+    { params: { id: 'new' } },
+    // Add paths for all existing models
+    ...(models?.map(model => ({
+      params: { id: model.id }
+    })) || [])
+  ];
+}
+
 const { data: { session } } = await supabase.auth.getSession();
 
 if (!session) {
