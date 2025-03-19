@@ -1,12 +1,47 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 
 interface OnlineStatusIndicatorProps {
-  isOnline: boolean;
+  modelId: string;
+  initialIsOnline: boolean;
   showText?: boolean;
   className?: string;
 }
 
-export default function OnlineStatusIndicator({ isOnline, showText = false, className = '' }: OnlineStatusIndicatorProps) {
+export default function OnlineStatusIndicator({ 
+  modelId, 
+  initialIsOnline, 
+  showText = false, 
+  className = '' 
+}: OnlineStatusIndicatorProps) {
+  const [isOnline, setIsOnline] = useState(initialIsOnline);
+
+  useEffect(() => {
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel(`model-status-${modelId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'models',
+          filter: `id=eq.${modelId}`
+        },
+        (payload) => {
+          if (payload.new && typeof payload.new.is_online === 'boolean') {
+            setIsOnline(payload.new.is_online);
+          }
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [modelId]);
+
   if (!isOnline) return null;
 
   return (

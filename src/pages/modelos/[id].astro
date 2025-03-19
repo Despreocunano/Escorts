@@ -101,7 +101,12 @@ const attributes = [
           <div class="flex-grow">
             <div class="flex items-center gap-3 mb-6">
               <h1 class="text-3xl font-light">{model.name}</h1>
-              <OnlineStatusIndicator isOnline={model.is_online} showText={true} client:load />
+              <OnlineStatusIndicator 
+                modelId={model.id} 
+                initialIsOnline={model.is_online} 
+                showText={true} 
+                client:load 
+              />
             </div>
             
             {model.description && (

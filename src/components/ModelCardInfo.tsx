@@ -13,7 +13,11 @@ export default function ModelCardInfo({ model }: ModelCardInfoProps) {
         <h3 className="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors">
           {model.name}
         </h3>
-        <OnlineStatusIndicator isOnline={model.is_online} className="!py-0.5" />
+        <OnlineStatusIndicator 
+          modelId={model.id} 
+          initialIsOnline={model.is_online} 
+          className="!py-0.5" 
+        />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
         <div className="bg-[#1A1A1A] py-3 px-4 rounded">
