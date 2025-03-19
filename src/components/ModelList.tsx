@@ -129,7 +129,7 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
               )}
               {model.is_featured && (
                 <div className="absolute top-4 left-4 bg-[#9F8E6A]/30 backdrop-blur-xl px-3 py-1.5 rounded-full z-10 border border-[#9F8E6A]/20">
-                  <span className="text-white text-xs font-medium tracking-[0.15em]">DESTACADA</span>
+                  <span className="text-white text-[10px] md:text-xs font-medium tracking-[0.15em]">DESTACADA</span>
                 </div>
               )}
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
