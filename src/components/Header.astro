@@ -1,9 +1,9 @@
 ---
 ---
 
-<header class="fixed w-full z-[60] bg-black">
+<header class="fixed w-full z-[60] transition-colors duration-300" id="header">
   <!-- Top Bar -->
-  <div class="bg-black/80 backdrop-blur-lg border-b border-white/10">
+  <div class="bg-black/0 backdrop-blur-0 border-b border-white/10 transition-all duration-300" id="topBar">
     <div class="container mx-auto px-6">
       <div class="flex items-center justify-between h-10">
         <!-- Left Links -->
@@ -23,7 +23,7 @@
   </div>
 
   <!-- Main Navigation -->
-  <div class="bg-black/80 backdrop-blur-lg">
+  <div class="bg-black/0 backdrop-blur-0 transition-all duration-300" id="mainNav">
     <div class="container mx-auto px-6">
       <nav class="flex items-center justify-between h-20">
         <!-- Logo -->
@@ -77,12 +77,35 @@
 </header>
 
 <script>
+  const header = document.getElementById('header');
+  const topBar = document.getElementById('topBar');
+  const mainNav = document.getElementById('mainNav');
   const menuButton = document.getElementById('menuButton');
   const mobileMenu = document.getElementById('mobileMenu');
 
+  // Handle mobile menu
   if (menuButton && mobileMenu) {
     menuButton.addEventListener('click', () => {
       mobileMenu.classList.toggle('hidden');
+    });
+  }
+
+  // Handle header transparency and blur
+  if (header && topBar && mainNav) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 0) {
+        topBar.classList.remove('bg-black/0', 'backdrop-blur-0');
+        topBar.classList.add('bg-black/80', 'backdrop-blur-lg');
+        
+        mainNav.classList.remove('bg-black/0', 'backdrop-blur-0');
+        mainNav.classList.add('bg-black/80', 'backdrop-blur-lg');
+      } else {
+        topBar.classList.add('bg-black/0', 'backdrop-blur-0');
+        topBar.classList.remove('bg-black/80', 'backdrop-blur-lg');
+        
+        mainNav.classList.add('bg-black/0', 'backdrop-blur-0');
+        mainNav.classList.remove('bg-black/80', 'backdrop-blur-lg');
+      }
     });
   }
 </script>
