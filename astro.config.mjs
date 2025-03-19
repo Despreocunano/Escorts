@@ -11,7 +11,7 @@ export default defineConfig({
     imageService: true,
     imagesConfig: {
       domains: [],
-      formats: ['image/avif', 'image/webp', 'image/png', 'image/jpeg'],
+      formats: ['image/webp', 'image/jpeg'],
       sizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     },
     assets: true
