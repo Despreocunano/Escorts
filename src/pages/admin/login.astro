@@ -1,6 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { supabase } from '../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+);
 
 // Check if user is already authenticated and is admin
 const { data: { session } } = await supabase.auth.getSession();
@@ -58,7 +63,12 @@ if (session && adminData) {
 </Layout>
 
 <script>
-  import { supabase } from '../../lib/supabase';
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+)
 
   const form = document.getElementById('loginForm');
   const errorMessage = document.getElementById('errorMessage');

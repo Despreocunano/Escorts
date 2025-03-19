@@ -1,6 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { supabase } from '../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+);
 
 // Check if user is authenticated and is an admin
 const { data: { session } } = await supabase.auth.getSession();
@@ -88,7 +93,12 @@ const { data: models } = await supabase
 </Layout>
 
 <script>
-  import { supabase } from '../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+);
 
   // Handle model deletion
   document.querySelectorAll('.delete-model').forEach(button => {

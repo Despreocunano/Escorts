@@ -1,6 +1,11 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { supabase } from '../../../lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+);
 
 // This is required for static site generation
 export async function getStaticPaths() {
@@ -10,7 +15,7 @@ export async function getStaticPaths() {
     
   return [
     { params: { id: 'new' } },
-    ...(models?.map(model => ({
+    ...(models?.map((model: { id: string }) => ({
       params: { id: model.id }
     })) || [])
   ];
@@ -213,7 +218,12 @@ if (!isNew && !model) {
 </Layout>
 
 <script>
-  import { supabase } from '../../../lib/supabase';
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  import.meta.env.PUBLIC_SUPABASE_URL,
+  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+)
 
   const form = document.getElementById('modelForm');
   const modelId = (document.getElementById('modelId') as HTMLInputElement)?.value;
