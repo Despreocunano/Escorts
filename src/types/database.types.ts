@@ -26,5 +26,6 @@ export type Model = {
   whatsapp?: string;
   is_active: boolean;
   is_featured: boolean;
+  is_online: boolean;
   model_category: ModelCategory;
 }

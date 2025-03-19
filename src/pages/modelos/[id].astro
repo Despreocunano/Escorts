@@ -98,7 +98,15 @@ const attributes = [
 
           <!-- Details Section -->
           <div class="flex-grow">
-            <h1 class="text-3xl font-light mb-6">{model.name}</h1>
+            <div class="flex items-center gap-3 mb-6">
+              <h1 class="text-3xl font-light">{model.name}</h1>
+              {model.is_online && (
+                <div class="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full">
+                  <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span class="text-green-500 text-sm">Online</span>
+                </div>
+              )}
+            </div>
             
             {model.description && (
               <p class="text-gray-300 leading-relaxed mb-12">{model.description}</p>
