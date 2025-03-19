@@ -11,6 +11,14 @@ export default defineConfig({
     define: {
       'import.meta.env.PUBLIC_SUPABASE_URL': JSON.stringify(process.env.PUBLIC_SUPABASE_URL),
       'import.meta.env.PUBLIC_SUPABASE_ANON_KEY': JSON.stringify(process.env.PUBLIC_SUPABASE_ANON_KEY)
+    },
+    ssr: {
+      noExternal: ['@astrojs/vercel']
+    }
+  },
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/noop'
     }
   }
 });
