@@ -1,13 +1,19 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel/static';
 
 export default defineConfig({
   integrations: [tailwind(), react()],
-  output: 'server',
+  output: 'static',
   adapter: vercel({
     analytics: true,
-    imageService: false
+    imageService: false,
+    imagesConfig: {
+      domains: [],
+      formats: ['image/*'],
+      sizes: [],
+    },
+    assets: false
   }),
 });
