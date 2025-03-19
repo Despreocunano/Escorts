@@ -5,8 +5,17 @@ import ModelList from '../components/ModelList';
 
 <Layout title="Modelos Premium">
   <div class="min-h-screen pt-32 px-6">
-    <div class="max-w-screen-lg mx-auto">
-      <h1 class="text-3xl font-light mb-16 text-center text-white">MODELOS PREMIUM</h1>
+    <div class="max-w-[1200px] mx-auto">
+      <div class="space-y-6 mb-16">
+        <div class="inline-block">
+          <h1 class="text-4xl font-light text-white tracking-[0.2em] border-b-2 border-[#9F8E6A] pb-4">
+            MODELOS PREMIUM SELECTAS
+          </h1>
+        </div>
+        <p class="text-gray-400 text-base leading-relaxed tracking-wide max-w-3xl">
+          Descubre nuestra selección Premium, donde cada modelo combina belleza excepcional con profesionalismo incomparable. Una experiencia superior que supera expectativas.
+        </p>
+      </div>
       <ModelList category="PREMIUM" showTitle={false} client:load />
     </div>
   </div>

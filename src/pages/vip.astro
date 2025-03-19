@@ -5,8 +5,17 @@ import ModelList from '../components/ModelList';
 
 <Layout title="Modelos VIP">
   <div class="min-h-screen pt-32 px-6">
-    <div class="max-w-screen-lg mx-auto">
-      <h1 class="text-3xl font-light mb-16 text-center text-white">MODELOS VIP</h1>
+    <div class="max-w-[1200px] mx-auto">
+      <div class="space-y-6 mb-16">
+        <div class="inline-block">
+          <h1 class="text-4xl font-light text-white tracking-[0.2em] border-b-2 border-[#9F8E6A] pb-4">
+            MODELOS VIP EXCLUSIVAS
+          </h1>
+        </div>
+        <p class="text-gray-400 text-base leading-relaxed tracking-wide max-w-3xl">
+          Nuestra colección más distinguida de modelos VIP, representando la máxima expresión de elegancia y sofisticación. Una experiencia exclusiva diseñada para los más exigentes.
+        </p>
+      </div>
       <ModelList category="VIP" showTitle={false} client:load />
     </div>
   </div>

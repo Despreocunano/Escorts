@@ -19,8 +19,17 @@ const title = `Modelos en ${area}`;
 
 <Layout title={title}>
   <div class="min-h-screen pt-32 px-6">
-    <div class="max-w-screen-lg mx-auto">
-      <h1 class="text-3xl font-light mb-16 text-center text-white">MODELOS EN {area.toUpperCase()}</h1>
+    <div class="max-w-[1200px] mx-auto">
+      <div class="space-y-6 mb-16">
+        <div class="inline-block">
+          <h1 class="text-4xl font-light text-white tracking-[0.2em] border-b-2 border-[#9F8E6A] pb-4">
+            MODELOS EN {area.toUpperCase()}
+          </h1>
+        </div>
+        <p class="text-gray-400 text-base leading-relaxed tracking-wide max-w-3xl">
+          Descubre nuestra exclusiva selección de modelos en {area}, donde la belleza y el profesionalismo se unen para crear experiencias inolvidables.
+        </p>
+      </div>
       <ModelList area={area} showTitle={false} client:load />
     </div>
   </div>
