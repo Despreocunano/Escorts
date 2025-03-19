@@ -6,7 +6,23 @@ import vercel from '@astrojs/vercel/serverless';
 export default defineConfig({
   integrations: [tailwind(), react()],
   output: 'hybrid',
-  adapter: vercel(),
+  adapter: vercel({
+    analytics: true,
+    imageService: false,
+    imagesConfig: {
+      domains: [],
+      formats: ['image/*'],
+      sizes: [],
+    },
+    webAnalytics: {
+      enabled: true
+    },
+    speedInsights: {
+      enabled: true
+    },
+    devImageService: 'sharp',
+    functionPerRoute: false
+  }),
   vite: {
     define: {
       'import.meta.env.PUBLIC_SUPABASE_URL': JSON.stringify(process.env.PUBLIC_SUPABASE_URL),
@@ -14,11 +30,6 @@ export default defineConfig({
     },
     ssr: {
       noExternal: ['@astrojs/vercel']
-    }
-  },
-  image: {
-    service: {
-      entrypoint: 'astro/assets/services/noop'
     }
   }
 });
