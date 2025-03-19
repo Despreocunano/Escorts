@@ -62,23 +62,23 @@ import ModelList from '../components/ModelList';
     </div>
   </div>
 
-  <!-- Models Grid -->
+  <!-- Models Grid by Category -->
   <section class="bg-black py-24 px-6">
-    <div class="max-w-[1200px] mx-auto">
-      <ModelList client:load />
+    <div class="max-w-[1200px] mx-auto space-y-48">
+      <ModelList category="VIP" client:load />
+      <ModelList category="PREMIUM" client:load />
+      <ModelList category="GOLD" client:load />
     </div>
   </section>
 </Layout>
 
 <style>
-  /* Hide scrollbar for Chrome, Safari and Opera */
   .overflow-x-auto::-webkit-scrollbar {
     display: none;
   }
 
-  /* Hide scrollbar for IE, Edge and Firefox */
   .overflow-x-auto {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 </style>

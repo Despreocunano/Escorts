@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import type { Model } from '../types/database.types';
+import type { Model, ModelCategory } from '../types/database.types';
 
 export class ModelsService {
   private static instance: ModelsService;
@@ -19,6 +19,7 @@ export class ModelsService {
         .from('models')
         .select('*')
         .eq('is_active', true)
+        .order('model_category', { ascending: true }) // VIP first
         .order('is_featured', { ascending: false })
         .order('name');
 
@@ -26,6 +27,24 @@ export class ModelsService {
       return data || [];
     } catch (error) {
       console.error('Error fetching models:', error);
+      throw error;
+    }
+  }
+
+  async getModelsByCategory(category: ModelCategory): Promise<Model[]> {
+    try {
+      const { data, error } = await supabase
+        .from('models')
+        .select('*')
+        .eq('is_active', true)
+        .eq('model_category', category)
+        .order('is_featured', { ascending: false })
+        .order('name');
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching models by category:', error);
       throw error;
     }
   }
@@ -59,6 +78,7 @@ export class ModelsService {
           area.ilike.%${query}%,
           location.ilike.%${query}%
         `)
+        .order('model_category', { ascending: true })
         .order('is_featured', { ascending: false })
         .order('name');
 
@@ -66,43 +86,6 @@ export class ModelsService {
       return data || [];
     } catch (error) {
       console.error('Error searching models:', error);
-      throw error;
-    }
-  }
-
-  async getFilteredModels(filters: {
-    hasVideos?: boolean;
-    hasVisibleFace?: boolean;
-    hasExperiences?: boolean;
-    isAvailableNow?: boolean;
-    isOnPromotion?: boolean;
-  }): Promise<Model[]> {
-    try {
-      let query = supabase
-        .from('models')
-        .select('*')
-        .eq('is_active', true);
-
-      if (filters.hasVideos) {
-        query = query.not('videos', 'is', null).gt('videos', '{}');
-      }
-      
-      if (filters.isAvailableNow) {
-        query = query.eq('is_available', true);
-      }
-
-      if (filters.isOnPromotion) {
-        query = query.eq('on_promotion', true);
-      }
-
-      const { data, error } = await query
-        .order('is_featured', { ascending: false })
-        .order('name');
-
-      if (error) throw error;
-      return data || [];
-    } catch (error) {
-      console.error('Error fetching filtered models:', error);
       throw error;
     }
   }

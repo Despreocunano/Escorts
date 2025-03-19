@@ -1,0 +1,13 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ModelList from '../components/ModelList';
+---
+
+<Layout title="Modelos Premium">
+  <div class="min-h-screen pt-32 px-6">
+    <div class="max-w-screen-lg mx-auto">
+      <h1 class="text-3xl font-light mb-16 text-center text-white">MODELOS PREMIUM</h1>
+      <ModelList category="PREMIUM" showTitle={false} client:load />
+    </div>
+  </div>
+</Layout>
