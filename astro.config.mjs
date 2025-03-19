@@ -10,9 +10,9 @@ export default defineConfig({
     analytics: true,
     imageService: true,
     imagesConfig: {
-      domains: [],
-      formats: ['image/webp', 'image/jpeg'],
-      sizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+      domains: ['images.unsplash.com'], // Add the domain where your images are hosted
+      formats: ['webp', 'avif'],
+      sizes: [400, 800, 1200],
     },
     assets: true
   }),
