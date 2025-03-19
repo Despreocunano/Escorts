@@ -7,6 +7,7 @@ export default defineConfig({
   integrations: [tailwind(), react()],
   output: 'server',
   adapter: vercel({
-    analytics: true
+    analytics: true,
+    imageService: false
   }),
 });
