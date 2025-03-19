@@ -2,6 +2,20 @@
 import Layout from '../../../layouts/Layout.astro';
 import { supabase } from '../../../lib/supabase';
 
+// This is required for static site generation
+export async function getStaticPaths() {
+  const { data: models } = await supabase
+    .from('models')
+    .select('*');
+    
+  return [
+    { params: { id: 'new' } },
+    ...(models?.map(model => ({
+      params: { id: model.id }
+    })) || [])
+  ];
+}
+
 // Check authentication and admin status
 const { data: { session } } = await supabase.auth.getSession();
 const { data: adminData } = session ? await supabase
