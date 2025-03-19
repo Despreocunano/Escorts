@@ -94,7 +94,7 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
               {CATEGORY_TITLES[category]}
             </h2>
           </div>
-          <p className="text-gray-400 text-base leading-relaxed tracking-wide max-w-3xl">
+          <p className="text-gray-400 text-base leading-relaxed tracking-wide">
             {CATEGORY_DESCRIPTIONS[category]}
           </p>
         </div>
