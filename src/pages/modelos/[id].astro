@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { ModelsService } from '../../services/models.service';
+import OnlineStatusIndicator from '../../components/OnlineStatusIndicator';
 
 export async function getStaticPaths() {
   try {
@@ -100,12 +101,7 @@ const attributes = [
           <div class="flex-grow">
             <div class="flex items-center gap-3 mb-6">
               <h1 class="text-3xl font-light">{model.name}</h1>
-              {model.is_online && (
-                <div class="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full">
-                  <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span class="text-green-500 text-sm">Online</span>
-                </div>
-              )}
+              <OnlineStatusIndicator isOnline={model.is_online} showText={true} client:load />
             </div>
             
             {model.description && (
