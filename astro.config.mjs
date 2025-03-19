@@ -8,12 +8,12 @@ export default defineConfig({
   output: 'static',
   adapter: vercel({
     analytics: true,
-    imageService: false,
+    imageService: true,
     imagesConfig: {
       domains: [],
       formats: ['image/*'],
-      sizes: [],
+      sizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     },
-    assets: false
+    assets: true
   }),
 });
