@@ -1,14 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getModelById, getAllModelIds } from '../../lib/models';
+import { getModelById } from '../../lib/models';
 import type { Model } from '../../lib/models';
-
-export async function getStaticPaths() {
-  const models = await getAllModelIds();
-  return models.map(model => ({
-    params: { id: model.id }
-  }));
-}
 
 const { id } = Astro.params;
 let model: Model | null = null;

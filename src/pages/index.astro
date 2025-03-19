@@ -68,7 +68,7 @@ const models = await getAllModels();
   <!-- Models Grid -->
   <section class="bg-black py-24 px-6">
     <div class="max-w-[1200px] mx-auto">
-      <ModelList models={models} />
+      <ModelList models={models} client:load />
     </div>
   </section>
 </Layout>
