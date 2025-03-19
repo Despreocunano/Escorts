@@ -8,12 +8,12 @@ export default defineConfig({
   output: 'static',
   adapter: vercel({
     analytics: true,
-    imageService: true,
+    imageService: false,
     imagesConfig: {
-      domains: ['images.unsplash.com'], // Add the domain where your images are hosted
-      formats: ['webp', 'avif'],
-      sizes: [400, 800, 1200],
+      domains: [],
+      formats: [],
+      sizes: [],
     },
-    assets: true
+    assets: false
   }),
 });
