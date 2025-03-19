@@ -1,18 +1,6 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
-
-interface Model {
-  id: string;
-  name: string;
-  height: number;
-  bust: number;
-  waist: number;
-  hips: number;
-  main_image: string;
-  videos?: string[];
-  rate?: number;
-  area?: string;
-}
+import { ModelsService } from '../services/models.service';
+import type { Model } from '../types/database.types';
 
 export default function ModelList() {
   const [models, setModels] = useState<Model[]>([]);
@@ -20,15 +8,12 @@ export default function ModelList() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const modelsService = ModelsService.getInstance();
+    
     async function fetchModels() {
       try {
-        const { data, error } = await supabase
-          .from('models')
-          .select('*')
-          .order('name');
-        
-        if (error) throw error;
-        setModels(data || []);
+        const data = await modelsService.getAllModels();
+        setModels(data);
       } catch (error) {
         console.error('Error fetching models:', error);
         setError('fetch_error');

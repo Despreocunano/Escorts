@@ -1,14 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { supabase } from '../../lib/supabase';
+import { ModelsService } from '../../services/models.service';
 
 export async function getStaticPaths() {
   try {
-    const { data: models, error } = await supabase
-      .from('models')
-      .select('id');
-
-    if (error) throw error;
+    const modelsService = ModelsService.getInstance();
+    const models = await modelsService.getAllModels();
 
     return models.map(model => ({
       params: { id: model.id }
@@ -24,14 +21,8 @@ let model = null;
 let error = null;
 
 try {
-  const { data, error: supabaseError } = await supabase
-    .from('models')
-    .select('*')
-    .eq('id', id)
-    .single();
-
-  if (supabaseError) throw supabaseError;
-  model = data;
+  const modelsService = ModelsService.getInstance();
+  model = await modelsService.getModelById(id);
 } catch (e) {
   error = e;
   console.error('Error fetching model:', e);
