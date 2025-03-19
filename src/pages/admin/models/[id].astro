@@ -4,6 +4,15 @@ import { checkAdminStatus, getModelById } from '../../../lib/queries';
 import { supabase } from '../../../lib/supabase';
 import type { Model } from '../../../lib/types';
 
+// Required for static site generation
+export async function getStaticPaths() {
+  return [
+    { params: { id: 'new' } },
+    // For static builds, we don't need to pre-render edit pages
+    // They will be handled client-side
+  ];
+}
+
 const { id } = Astro.params;
 const isNew = id === 'new';
 
@@ -211,7 +220,7 @@ if (!isNew) {
   import { createModel, updateModel } from '../../../lib/queries';
 
   const form = document.getElementById('modelForm');
-  const modelId = (document.getElementById('modelId') as HTMLInputElement)?.value;
+  const modelId = document.getElementById('modelId')?.value;
   const isNew = modelId === 'new';
 
   form?.addEventListener('submit', async (e) => {
