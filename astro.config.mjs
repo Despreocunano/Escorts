@@ -1,11 +1,11 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel/static';
 
 export default defineConfig({
   integrations: [tailwind(), react()],
-  output: 'hybrid',
+  output: 'static',
   adapter: vercel({
     analytics: true,
     imageService: false,
@@ -14,22 +14,6 @@ export default defineConfig({
       formats: ['image/*'],
       sizes: [],
     },
-    webAnalytics: {
-      enabled: true
-    },
-    speedInsights: {
-      enabled: true
-    },
-    devImageService: 'sharp',
-    functionPerRoute: false
+    assets: false
   }),
-  vite: {
-    define: {
-      'import.meta.env.PUBLIC_SUPABASE_URL': JSON.stringify(process.env.PUBLIC_SUPABASE_URL),
-      'import.meta.env.PUBLIC_SUPABASE_ANON_KEY': JSON.stringify(process.env.PUBLIC_SUPABASE_ANON_KEY)
-    },
-    ssr: {
-      noExternal: ['@astrojs/vercel']
-    }
-  }
 });
