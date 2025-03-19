@@ -1,0 +1,252 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { supabase } from '../../../lib/supabase';
+
+// Check authentication and admin status
+const { data: { session } } = await supabase.auth.getSession();
+const { data: adminData } = session ? await supabase
+  .from('admins')
+  .select('*')
+  .eq('id', session.user.id)
+  .single() : { data: null };
+
+if (!session || !adminData) {
+  return Astro.redirect('/admin/login');
+}
+
+const { id } = Astro.params;
+const isNew = id === 'new';
+
+// Fetch model data if editing
+const { data: model } = !isNew ? await supabase
+  .from('models')
+  .select('*')
+  .eq('id', id)
+  .single() : { data: null };
+
+if (!isNew && !model) {
+  return Astro.redirect('/admin');
+}
+---
+
+<Layout title={isNew ? "Nueva Modelo" : "Editar Modelo"}>
+  <div class="min-h-screen pt-32 px-6 bg-gray-900">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-2xl font-light text-white mb-8">
+        {isNew ? "Nueva Modelo" : `Editar: ${model?.name}`}
+      </h1>
+
+      <form id="modelForm" class="bg-black/50 rounded-lg p-8">
+        <input type="hidden" id="modelId" value={id} />
+        
+        <!-- Basic Information -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div>
+            <label for="name" class="block text-gray-300 mb-2">Nombre</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={model?.name || ''}
+              required
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+
+          <div>
+            <label for="location" class="block text-gray-300 mb-2">Ubicación</label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={model?.location || ''}
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+        </div>
+
+        <!-- Measurements -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+          <div>
+            <label for="height" class="block text-gray-300 mb-2">Altura (cm)</label>
+            <input
+              type="number"
+              id="height"
+              name="height"
+              value={model?.height || ''}
+              required
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+
+          <div>
+            <label for="bust" class="block text-gray-300 mb-2">Busto (cm)</label>
+            <input
+              type="number"
+              id="bust"
+              name="bust"
+              value={model?.bust || ''}
+              required
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+
+          <div>
+            <label for="waist" class="block text-gray-300 mb-2">Cintura (cm)</label>
+            <input
+              type="number"
+              id="waist"
+              name="waist"
+              value={model?.waist || ''}
+              required
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+
+          <div>
+            <label for="hips" class="block text-gray-300 mb-2">Cadera (cm)</label>
+            <input
+              type="number"
+              id="hips"
+              name="hips"
+              value={model?.hips || ''}
+              required
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div>
+            <label for="eyes" class="block text-gray-300 mb-2">Color de Ojos</label>
+            <input
+              type="text"
+              id="eyes"
+              name="eyes"
+              value={model?.eyes || ''}
+              required
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+
+          <div>
+            <label for="hair" class="block text-gray-300 mb-2">Color de Cabello</label>
+            <input
+              type="text"
+              id="hair"
+              name="hair"
+              value={model?.hair || ''}
+              required
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+
+          <div>
+            <label for="shoe_size" class="block text-gray-300 mb-2">Talla de Zapato</label>
+            <input
+              type="number"
+              id="shoe_size"
+              name="shoe_size"
+              value={model?.shoe_size || ''}
+              required
+              class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+            />
+          </div>
+        </div>
+
+        <!-- Images -->
+        <div class="mb-8">
+          <label for="main_image" class="block text-gray-300 mb-2">Imagen Principal (URL)</label>
+          <input
+            type="url"
+            id="main_image"
+            name="main_image"
+            value={model?.main_image || ''}
+            required
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+          />
+        </div>
+
+        <div class="mb-8">
+          <label for="gallery" class="block text-gray-300 mb-2">Galería (URLs, una por línea)</label>
+          <textarea
+            id="gallery"
+            name="gallery"
+            rows="4"
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded px-4 py-2 focus:outline-none focus:border-[#9F8E6A]"
+          >{model?.gallery?.join('\n') || ''}</textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-end gap-4">
+          <a 
+            href="/admin"
+            class="px-6 py-2 text-gray-300 hover:text-white transition-colors"
+          >
+            Cancelar
+          </a>
+          <button
+            type="submit"
+            class="bg-[#9F8E6A] hover:bg-[#8A7A5C] text-white px-6 py-2 rounded transition-colors"
+          >
+            {isNew ? "Crear" : "Actualizar"}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { supabase } from '../../../lib/supabase';
+
+  const form = document.getElementById('modelForm');
+  const modelId = (document.getElementById('modelId') as HTMLInputElement)?.value;
+  const isNew = modelId === 'new';
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target as HTMLFormElement);
+    const gallery = formData.get('gallery')?.toString().split('\n').filter(url => url.trim());
+    
+    const modelData = {
+      name: formData.get('name'),
+      location: formData.get('location'),
+      height: parseInt(formData.get('height') as string),
+      bust: parseInt(formData.get('bust') as string),
+      waist: parseInt(formData.get('waist') as string),
+      hips: parseInt(formData.get('hips') as string),
+      eyes: formData.get('eyes'),
+      hair: formData.get('hair'),
+      shoe_size: parseInt(formData.get('shoe_size') as string),
+      main_image: formData.get('main_image'),
+      gallery,
+      updated_at: new Date().toISOString()
+    };
+
+    try {
+      if (isNew) {
+        const { error } = await supabase
+          .from('models')
+          .insert([modelData]);
+        
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('models')
+          .update(modelData)
+          .eq('id', modelId);
+        
+        if (error) throw error;
+      }
+
+      // Redirect back to admin panel
+      window.location.href = '/admin';
+    } catch (error) {
+      alert('Error al guardar los cambios');
+      console.error('Error:', error);
+    }
+  });
+</script>
