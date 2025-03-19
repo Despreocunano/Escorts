@@ -1,30 +1,29 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-);
+import { checkAdminStatus, getAllModels, deleteModel } from '../../lib/queries';
+import { supabase } from '../../lib/supabase';
+import type { Model } from '../../lib/types';
 
 // Check if user is authenticated and is an admin
 const { data: { session } } = await supabase.auth.getSession();
-const { data: adminData } = session ? await supabase
-  .from('admins')
-  .select('*')
-  .eq('id', session.user.id)
-  .single() : { data: null };
+let adminData = null;
+let models: Model[] = [];
+
+if (session) {
+  try {
+    adminData = await checkAdminStatus(session.user.id);
+    if (adminData) {
+      models = await getAllModels();
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
 
 // If not authenticated or not admin, redirect to login
 if (!session || !adminData) {
   return Astro.redirect('/admin/login');
 }
-
-// Fetch models
-const { data: models } = await supabase
-  .from('models')
-  .select('*')
-  .order('name');
 ---
 
 <Layout title="Panel de Administración">
@@ -93,12 +92,7 @@ const { data: models } = await supabase
 </Layout>
 
 <script>
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-);
+  import { deleteModel } from '../../lib/queries';
 
   // Handle model deletion
   document.querySelectorAll('.delete-model').forEach(button => {
@@ -107,15 +101,12 @@ const supabase = createClient(
       if (!modelId) return;
 
       if (confirm('¿Estás seguro de que deseas eliminar esta modelo?')) {
-        const { error } = await supabase
-          .from('models')
-          .delete()
-          .eq('id', modelId);
-
-        if (error) {
-          alert('Error al eliminar la modelo');
-        } else {
+        try {
+          await deleteModel(modelId);
           window.location.reload();
+        } catch (error) {
+          alert('Error al eliminar la modelo');
+          console.error('Error:', error);
         }
       }
     });

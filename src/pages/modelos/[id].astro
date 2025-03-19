@@ -1,26 +1,22 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { createClient } from '@supabase/supabase-js'
+import { getModelById } from '../../lib/queries';
+import type { Model } from '../../lib/types';
 
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-)
+const { id } = Astro.params;
+let model: Model | null = null;
+let error: Error | null = null;
 
-// This is required for static site generation
-export async function getStaticPaths() {
-  // During build time, return an empty array if no data is available
-  const { data: models } = await supabase
-    .from('models')
-    .select('*');
-    
-  return models?.map(model => ({
-    params: { id: model.id },
-    props: { model }
-  })) || [];
+try {
+  model = await getModelById(id!);
+} catch (e) {
+  error = e as Error;
+  console.error('Error fetching model:', e);
 }
 
-const { model } = Astro.props;
+if (!model && !error) {
+  return Astro.redirect('/404');
+}
 
 const services = [
   'Sesiones fotográficas',
@@ -41,213 +37,221 @@ const attributes = [
 ];
 ---
 
-<Layout title={`${model.name} - Agencia de Modelos`}>
-  <div class="min-h-screen bg-black text-white pt-36">
-    <div class="max-w-[1200px] mx-auto px-6">
-      <div class="flex flex-col md:flex-row gap-12 items-start mb-24">
-        <!-- Profile Image Section -->
-        <div class="w-full md:w-[400px] flex-shrink-0">
-          <div class="rounded-2xl overflow-hidden aspect-[3/4] mb-6">
-            <img
-              src={model.main_image}
-              alt={model.name}
-              class="w-full h-full object-cover"
-              fetchpriority="high"
-            />
-          </div>
-          <div class="text-center">
-            <div class="grid grid-cols-2 gap-4 text-sm">
-              <div class="bg-[#1A1A1A] p-4 rounded-lg">
-                <p class="text-gray-400">Tarifa</p>
-                <p class="text-white text-sm">{model.rate ? `$${model.rate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` : 'Consultar'}</p>
-              </div>
-              <div class="bg-[#1A1A1A] p-4 rounded-lg">
-                <p class="text-gray-400">Ubicación</p>
-                <p class="text-white text-sm">{model.area || 'No especificada'}</p>
-              </div>
+<Layout title={model ? `${model.name} - Agencia de Modelos` : 'Error'}>
+  {error && (
+    <div class="min-h-screen flex items-center justify-center px-6">
+      <p class="text-gray-400">Error al cargar los detalles del modelo.</p>
+    </div>
+  )}
+
+  {model && (
+    <div class="min-h-screen bg-black text-white pt-36">
+      <div class="max-w-[1200px] mx-auto px-6">
+        <div class="flex flex-col md:flex-row gap-12 items-start mb-24">
+          <!-- Profile Image Section -->
+          <div class="w-full md:w-[400px] flex-shrink-0">
+            <div class="rounded-2xl overflow-hidden aspect-[3/4] mb-6">
+              <img
+                src={model.main_image}
+                alt={model.name}
+                class="w-full h-full object-cover"
+                fetchpriority="high"
+              />
             </div>
-            {model.whatsapp && (
-              <a
-                href={`https://wa.me/${model.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="mt-6 block w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors"
-              >
-                Contactar por WhatsApp
-              </a>
-            )}
-          </div>
-        </div>
-
-        <!-- Details Section -->
-        <div class="flex-grow">
-          <h1 class="text-3xl font-light mb-6">{model.name}</h1>
-          
-          {model.description && (
-            <p class="text-gray-300 leading-relaxed mb-12">{model.description}</p>
-          )}
-
-          <!-- Basic Info -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
-            {model.age && (
-              <div>
-                <p class="text-gray-400 text-sm mb-1">Edad</p>
-                <p class="text-white">{model.age} años</p>
-              </div>
-            )}
-            {model.height && (
-              <div>
-                <p class="text-gray-400 text-sm mb-1">Estatura</p>
-                <p class="text-white">{model.height} cms</p>
-              </div>
-            )}
-            {model.weight && (
-              <div>
-                <p class="text-gray-400 text-sm mb-1">Peso</p>
-                <p class="text-white">{model.weight} kgs</p>
-              </div>
-            )}
-            {model.skin_tone && (
-              <div>
-                <p class="text-gray-400 text-sm mb-1">Tez</p>
-                <p class="text-white">{model.skin_tone}</p>
-              </div>
-            )}
-            {model.schedule && (
-              <div>
-                <p class="text-gray-400 text-sm mb-1">Horario</p>
-                <p class="text-white">{model.schedule}</p>
-              </div>
-            )}
-            {model.location && (
-              <div>
-                <p class="text-gray-400 text-sm mb-1">Lugar</p>
-                <p class="text-white">{model.location}</p>
-              </div>
-            )}
-          </div>
-
-          <!-- Measurements -->
-          {(model.bust || model.waist || model.hips) && (
-            <div class="mt-12">
-              <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Medidas</h2>
-              <div class="grid grid-cols-3 gap-4 text-center">
-                {model.bust && (
-                  <div class="bg-[#1A1A1A] p-4 rounded-lg">
-                    <p class="text-gray-400 text-sm mb-1">Busto</p>
-                    <p class="text-white">{model.bust} cm</p>
-                  </div>
-                )}
-                {model.waist && (
-                  <div class="bg-[#1A1A1A] p-4 rounded-lg">
-                    <p class="text-gray-400 text-sm mb-1">Cintura</p>
-                    <p class="text-white">{model.waist} cm</p>
-                  </div>
-                )}
-                {model.hips && (
-                  <div class="bg-[#1A1A1A] p-4 rounded-lg">
-                    <p class="text-gray-400 text-sm mb-1">Cadera</p>
-                    <p class="text-white">{model.hips} cm</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          <!-- Services -->
-          <div class="mt-12">
-            <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Servicios</h2>
-            <div class="flex flex-wrap gap-2">
-              {services.map(service => (
-                <span class="px-4 py-2 bg-[#1A1A1A] rounded-lg text-sm">{service}</span>
-              ))}
-            </div>
-          </div>
-
-          <!-- Attributes -->
-          <div class="mt-12">
-            <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Atributos</h2>
-            <div class="flex flex-wrap gap-2">
-              {attributes.map(attribute => (
-                <span class="px-4 py-2 bg-[#1A1A1A] rounded-lg text-sm">{attribute}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Media Gallery -->
-      {((model.videos && model.videos.length > 0) || (model.gallery && model.gallery.length > 0)) && (
-        <div>
-          <h2 class="text-lg font-light mb-8 uppercase tracking-wider">Galería</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {/* Videos first */}
-            {model.videos && model.videos.map((video: string, index: number) => (
-              <div class="aspect-[3/4] bg-[#1A1A1A] overflow-hidden rounded-lg relative group">
-                <video
-                  src={video}
-                  class="w-full h-full object-cover"
-                  preload="metadata"
-                  poster={model.main_image}
-                  data-video={index}
-                >
-                </video>
-                <div 
-                  class="absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity duration-300"
-                  data-overlay={index}
-                >
-                  <button 
-                    class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm transition-transform duration-300 hover:scale-110"
-                    data-play-button={index}
-                  >
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      viewBox="0 0 24 24" 
-                      fill="currentColor" 
-                      class="w-8 h-8 text-white"
-                      data-play-icon={index}
-                    >
-                      <path 
-                        fill-rule="evenodd" 
-                        d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" 
-                        clip-rule="evenodd" 
-                      />
-                    </svg>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      class="w-8 h-8 text-white hidden"
-                      data-pause-icon={index}
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
+            <div class="text-center">
+              <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                  <p class="text-gray-400">Tarifa</p>
+                  <p class="text-white text-sm">{model.rate ? `$${model.rate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` : 'Consultar'}</p>
+                </div>
+                <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                  <p class="text-gray-400">Ubicación</p>
+                  <p class="text-white text-sm">{model.area || 'No especificada'}</p>
                 </div>
               </div>
-            ))}
+              {model.whatsapp && (
+                <a
+                  href={`https://wa.me/${model.whatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-6 block w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors"
+                >
+                  Contactar por WhatsApp
+                </a>
+              )}
+            </div>
+          </div>
+
+          <!-- Details Section -->
+          <div class="flex-grow">
+            <h1 class="text-3xl font-light mb-6">{model.name}</h1>
             
-            {/* Images after videos */}
-            {model.gallery && model.gallery.map((image: string, index: number) => (
-              <div class="aspect-[3/4] bg-[#1A1A1A] overflow-hidden rounded-lg">
-                <img
-                  src={image}
-                  alt={`${model.name} gallery`}
-                  class="w-full h-full object-cover"
-                  loading={index < 8 ? "eager" : "lazy"}
-                  decoding="async"
-                />
+            {model.description && (
+              <p class="text-gray-300 leading-relaxed mb-12">{model.description}</p>
+            )}
+
+            <!-- Basic Info -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+              {model.age && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Edad</p>
+                  <p class="text-white">{model.age} años</p>
+                </div>
+              )}
+              {model.height && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Estatura</p>
+                  <p class="text-white">{model.height} cms</p>
+                </div>
+              )}
+              {model.weight && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Peso</p>
+                  <p class="text-white">{model.weight} kgs</p>
+                </div>
+              )}
+              {model.skin_tone && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Tez</p>
+                  <p class="text-white">{model.skin_tone}</p>
+                </div>
+              )}
+              {model.schedule && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Horario</p>
+                  <p class="text-white">{model.schedule}</p>
+                </div>
+              )}
+              {model.location && (
+                <div>
+                  <p class="text-gray-400 text-sm mb-1">Lugar</p>
+                  <p class="text-white">{model.location}</p>
+                </div>
+              )}
+            </div>
+
+            <!-- Measurements -->
+            {(model.bust || model.waist || model.hips) && (
+              <div class="mt-12">
+                <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Medidas</h2>
+                <div class="grid grid-cols-3 gap-4 text-center">
+                  {model.bust && (
+                    <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                      <p class="text-gray-400 text-sm mb-1">Busto</p>
+                      <p class="text-white">{model.bust} cm</p>
+                    </div>
+                  )}
+                  {model.waist && (
+                    <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                      <p class="text-gray-400 text-sm mb-1">Cintura</p>
+                      <p class="text-white">{model.waist} cm</p>
+                    </div>
+                  )}
+                  {model.hips && (
+                    <div class="bg-[#1A1A1A] p-4 rounded-lg">
+                      <p class="text-gray-400 text-sm mb-1">Cadera</p>
+                      <p class="text-white">{model.hips} cm</p>
+                    </div>
+                  )}
+                </div>
               </div>
-            ))}
+            )}
+
+            <!-- Services -->
+            <div class="mt-12">
+              <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Servicios</h2>
+              <div class="flex flex-wrap gap-2">
+                {services.map(service => (
+                  <span class="px-4 py-2 bg-[#1A1A1A] rounded-lg text-sm">{service}</span>
+                ))}
+              </div>
+            </div>
+
+            <!-- Attributes -->
+            <div class="mt-12">
+              <h2 class="text-lg font-light mb-4 uppercase tracking-wider">Atributos</h2>
+              <div class="flex flex-wrap gap-2">
+                {attributes.map(attribute => (
+                  <span class="px-4 py-2 bg-[#1A1A1A] rounded-lg text-sm">{attribute}</span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      )}
+
+        <!-- Media Gallery -->
+        {((model.videos && model.videos.length > 0) || (model.gallery && model.gallery.length > 0)) && (
+          <div>
+            <h2 class="text-lg font-light mb-8 uppercase tracking-wider">Galería</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Videos first */}
+              {model.videos && model.videos.map((video: string, index: number) => (
+                <div class="aspect-[3/4] bg-[#1A1A1A] overflow-hidden rounded-lg relative group">
+                  <video
+                    src={video}
+                    class="w-full h-full object-cover"
+                    preload="metadata"
+                    poster={model.main_image}
+                    data-video={index}
+                  >
+                  </video>
+                  <div 
+                    class="absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity duration-300"
+                    data-overlay={index}
+                  >
+                    <button 
+                      class="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-sm transition-transform duration-300 hover:scale-110"
+                      data-play-button={index}
+                    >
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 0 24 24" 
+                        fill="currentColor" 
+                        class="w-8 h-8 text-white"
+                        data-play-icon={index}
+                      >
+                        <path 
+                          fill-rule="evenodd" 
+                          d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" 
+                          clip-rule="evenodd" 
+                        />
+                      </svg>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="w-8 h-8 text-white hidden"
+                        data-pause-icon={index}
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M6.75 5.25a.75.75 0 01.75-.75H9a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V5.25zm7.5 0A.75.75 0 0115 4.5h1.5a.75.75 0 01.75.75v13.5a.75.75 0 01-.75.75H15a.75.75 0 01-.75-.75V5.25z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Images after videos */}
+              {model.gallery && model.gallery.map((image: string, index: number) => (
+                <div class="aspect-[3/4] bg-[#1A1A1A] overflow-hidden rounded-lg">
+                  <img
+                    src={image}
+                    alt={`${model.name} gallery`}
+                    class="w-full h-full object-cover"
+                    loading={index < 8 ? "eager" : "lazy"}
+                    decoding="async"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-  </div>
+  )}
 </Layout>
 
 <script>

@@ -1,19 +1,19 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-);
+import { checkAdminStatus } from '../../lib/queries';
+import { supabase } from '../../lib/supabase';
 
 // Check if user is already authenticated and is admin
 const { data: { session } } = await supabase.auth.getSession();
-const { data: adminData } = session ? await supabase
-  .from('admins')
-  .select('*')
-  .eq('id', session.user.id)
-  .single() : { data: null };
+let adminData = null;
+
+if (session) {
+  try {
+    adminData = await checkAdminStatus(session.user.id);
+  } catch (error) {
+    console.error('Error checking admin status:', error);
+  }
+}
 
 // If authenticated and admin, redirect to admin panel
 if (session && adminData) {
@@ -63,12 +63,8 @@ if (session && adminData) {
 </Layout>
 
 <script>
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-)
+  import { supabase } from '../../lib/supabase';
+  import { checkAdminStatus } from '../../lib/queries';
 
   const form = document.getElementById('loginForm');
   const errorMessage = document.getElementById('errorMessage');
@@ -89,22 +85,17 @@ const supabase = createClient(
       if (error) throw error;
 
       // Check if user is admin
-      const { data: adminData, error: adminError } = await supabase
-        .from('admins')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
-
-      if (adminError || !adminData) {
+      try {
+        await checkAdminStatus(data.user.id);
+        // Redirect to admin panel
+        window.location.href = '/admin';
+      } catch (error) {
         await supabase.auth.signOut();
         throw new Error('No tienes permisos de administrador');
       }
-
-      // Redirect to admin panel
-      window.location.href = '/admin';
     } catch (error) {
       if (errorMessage) {
-        errorMessage.textContent = error instanceof Error ? error.message : 'An error occurred';
+        errorMessage.textContent = error.message;
         errorMessage.classList.remove('hidden');
       }
     }

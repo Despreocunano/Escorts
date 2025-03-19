@@ -1,50 +1,40 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import { createClient } from '@supabase/supabase-js';
+import { checkAdminStatus, getModelById } from '../../../lib/queries';
+import { supabase } from '../../../lib/supabase';
+import type { Model } from '../../../lib/types';
 
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-);
-
-// This is required for static site generation
-export async function getStaticPaths() {
-  const { data: models } = await supabase
-    .from('models')
-    .select('*');
-    
-  return [
-    { params: { id: 'new' } },
-    ...(models?.map((model: { id: string }) => ({
-      params: { id: model.id }
-    })) || [])
-  ];
-}
+const { id } = Astro.params;
+const isNew = id === 'new';
 
 // Check authentication and admin status
 const { data: { session } } = await supabase.auth.getSession();
-const { data: adminData } = session ? await supabase
-  .from('admins')
-  .select('*')
-  .eq('id', session.user.id)
-  .single() : { data: null };
+let adminData = null;
+let model: Model | null = null;
+
+if (session) {
+  try {
+    adminData = await checkAdminStatus(session.user.id);
+  } catch (error) {
+    console.error('Error checking admin status:', error);
+  }
+}
 
 if (!session || !adminData) {
   return Astro.redirect('/admin/login');
 }
 
-const { id } = Astro.params;
-const isNew = id === 'new';
-
 // Fetch model data if editing
-const { data: model } = !isNew ? await supabase
-  .from('models')
-  .select('*')
-  .eq('id', id)
-  .single() : { data: null };
-
-if (!isNew && !model) {
-  return Astro.redirect('/admin');
+if (!isNew) {
+  try {
+    model = await getModelById(id!);
+    if (!model) {
+      return Astro.redirect('/admin');
+    }
+  } catch (error) {
+    console.error('Error fetching model:', error);
+    return Astro.redirect('/admin');
+  }
 }
 ---
 
@@ -218,12 +208,7 @@ if (!isNew && !model) {
 </Layout>
 
 <script>
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  import.meta.env.PUBLIC_SUPABASE_URL,
-  import.meta.env.PUBLIC_SUPABASE_ANON_KEY
-)
+  import { createModel, updateModel } from '../../../lib/queries';
 
   const form = document.getElementById('modelForm');
   const modelId = (document.getElementById('modelId') as HTMLInputElement)?.value;
@@ -252,18 +237,9 @@ const supabase = createClient(
 
     try {
       if (isNew) {
-        const { error } = await supabase
-          .from('models')
-          .insert([modelData]);
-        
-        if (error) throw error;
+        await createModel(modelData);
       } else {
-        const { error } = await supabase
-          .from('models')
-          .update(modelData)
-          .eq('id', modelId);
-        
-        if (error) throw error;
+        await updateModel(modelId, modelData);
       }
 
       // Redirect back to admin panel
