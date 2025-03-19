@@ -106,26 +106,38 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
               href={`/modelos/${model.id}`}
               className="relative aspect-[3/4] bg-gray-900 rounded-lg mb-4 overflow-hidden group"
             >
-              <img
-                src={model.main_image}
-                alt={model.name}
-                className="h-full w-full object-cover"
-              />
-              {model.videos && model.videos.length > 0 && (
-                <div className="absolute top-4 right-4 bg-black/50 p-2 rounded-full z-10 backdrop-blur-sm">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    viewBox="0 0 24 24" 
-                    fill="currentColor" 
-                    className="w-5 h-5 text-white"
-                  >
-                    <path 
-                      fillRule="evenodd" 
-                      d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" 
-                      clipRule="evenodd" 
-                    />
-                  </svg>
-                </div>
+              {model.videos && model.videos.length > 0 ? (
+                <>
+                  <video
+                    src={model.videos[0]}
+                    className="h-full w-full object-cover"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    poster={model.main_image}
+                  />
+                  <div className="absolute top-4 right-4 bg-black/50 p-2 rounded-full z-10 backdrop-blur-sm">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      viewBox="0 0 24 24" 
+                      fill="currentColor" 
+                      className="w-5 h-5 text-white"
+                    >
+                      <path 
+                        fillRule="evenodd" 
+                        d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" 
+                        clipRule="evenodd" 
+                      />
+                    </svg>
+                  </div>
+                </>
+              ) : (
+                <img
+                  src={model.main_image}
+                  alt={model.name}
+                  className="h-full w-full object-cover"
+                />
               )}
               {model.is_featured && (
                 <div className="absolute top-4 left-4 bg-[#9F8E6A]/30 backdrop-blur-xl px-3 py-1.5 rounded-full z-10 border border-[#9F8E6A]/20">
