@@ -1,16 +1,16 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import react from '@astrojs/react';
-import vercel from '@astrojs/vercel/static';
+import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
   integrations: [tailwind(), react()],
-  output: 'static',
+  output: 'hybrid',
   adapter: vercel(),
   vite: {
     define: {
-      'import.meta.env.SUPABASE_URL': JSON.stringify(process.env.SUPABASE_URL),
-      'import.meta.env.SUPABASE_ANON_KEY': JSON.stringify(process.env.SUPABASE_ANON_KEY)
+      'import.meta.env.PUBLIC_SUPABASE_URL': JSON.stringify(process.env.PUBLIC_SUPABASE_URL),
+      'import.meta.env.PUBLIC_SUPABASE_ANON_KEY': JSON.stringify(process.env.PUBLIC_SUPABASE_ANON_KEY)
     }
   }
 });

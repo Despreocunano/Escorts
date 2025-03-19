@@ -4,14 +4,7 @@ import { checkAdminStatus, getModelById } from '../../../lib/queries';
 import { supabase } from '../../../lib/supabase';
 import type { Model } from '../../../lib/types';
 
-// Required for static site generation
-export async function getStaticPaths() {
-  return [
-    { params: { id: 'new' } },
-    // For static builds, we don't need to pre-render edit pages
-    // They will be handled client-side
-  ];
-}
+export const prerender = false;
 
 const { id } = Astro.params;
 const isNew = id === 'new';

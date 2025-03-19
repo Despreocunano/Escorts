@@ -1,15 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getAllModels, getModelById } from '../../lib/queries';
+import { getModelById } from '../../lib/queries';
 import type { Model } from '../../lib/types';
 
-// Required for static site generation
-export async function getStaticPaths() {
-  const models = await getAllModels();
-  return models.map(model => ({
-    params: { id: model.id }
-  }));
-}
+export const prerender = false;
 
 const { id } = Astro.params;
 let model: Model | null = null;
