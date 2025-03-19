@@ -3,6 +3,8 @@ import Layout from '../../layouts/Layout.astro';
 import { getModelById } from '../../lib/models';
 import type { Model } from '../../lib/models';
 
+export const prerender = false;
+
 const { id } = Astro.params;
 let model: Model | null = null;
 let error: Error | null = null;
