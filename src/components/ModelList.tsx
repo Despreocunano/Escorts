@@ -1,72 +1,11 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import type { Model } from '../lib/models';
 
-interface Model {
-  id: string;
-  name: string;
-  height: number;
-  bust: number;
-  waist: number;
-  hips: number;
-  main_image: string;
-  videos?: string[];
-  rate?: number;
-  area?: string;
+interface Props {
+  models: Model[];
 }
 
-export default function ModelList() {
-  const [models, setModels] = useState<Model[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchModels() {
-      try {
-        const { data, error } = await supabase
-          .from('models')
-          .select('*')
-          .order('name');
-        
-        if (error) throw error;
-        setModels(data || []);
-      } catch (error) {
-        console.error('Error fetching models:', error);
-        setError('fetch_error');
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchModels();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="flex flex-col animate-pulse">
-            <div className="aspect-[3/4] bg-gray-800 rounded-lg mb-4"></div>
-            <div className="flex flex-col items-center">
-              <div className="h-6 bg-gray-800 w-32 rounded mb-4"></div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 w-full">
-                <div className="h-16 bg-gray-800 rounded"></div>
-                <div className="h-16 bg-gray-800 rounded"></div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  if (error === 'fetch_error') {
-    return (
-      <div className="text-center py-8">
-        <p className="text-gray-400">Error al cargar los modelos. Por favor, intenta nuevamente más tarde.</p>
-      </div>
-    );
-  }
-
+export default function ModelList({ models }: Props) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {models.map((model) => (

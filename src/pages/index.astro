@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ModelList from '../components/ModelList';
+import { getAllModels } from '../lib/models';
+
+const models = await getAllModels();
 ---
 
 <Layout title="Agencia de Modelos">
@@ -65,7 +68,7 @@ import ModelList from '../components/ModelList';
   <!-- Models Grid -->
   <section class="bg-black py-24 px-6">
     <div class="max-w-[1200px] mx-auto">
-      <ModelList client:load />
+      <ModelList models={models} />
     </div>
   </section>
 </Layout>
