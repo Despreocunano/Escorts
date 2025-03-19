@@ -19,34 +19,42 @@ export interface Model {
   whatsapp?: string;
   description?: string;
   gallery?: string[];
+  shoe_size?: number;
+  eyes?: string;
+  hair?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
-export async function getAllModels() {
+export async function getAllModels(): Promise<Model[]> {
   const { data, error } = await supabase
     .from('models')
     .select('*')
     .order('name');
 
-  if (error) throw error;
-  return data as Model[];
+  if (error) throw new Error(`Error fetching models: ${error.message}`);
+  if (!data) return [];
+  return data;
 }
 
-export async function getModelById(id: string) {
+export async function getModelById(id: string): Promise<Model | null> {
   const { data, error } = await supabase
     .from('models')
     .select('*')
     .eq('id', id)
     .single();
 
-  if (error) throw error;
-  return data as Model;
+  if (error) throw new Error(`Error fetching model: ${error.message}`);
+  if (!data) return null;
+  return data;
 }
 
-export async function getAllModelIds() {
+export async function getAllModelIds(): Promise<{ id: string }[]> {
   const { data, error } = await supabase
     .from('models')
     .select('id');
 
-  if (error) throw error;
+  if (error) throw new Error(`Error fetching model IDs: ${error.message}`);
+  if (!data) return [];
   return data;
 }

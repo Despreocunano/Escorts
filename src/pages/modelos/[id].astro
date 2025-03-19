@@ -15,14 +15,13 @@ let model: Model | null = null;
 let error: Error | null = null;
 
 try {
-  model = await getModelById(id);
+  model = await getModelById(id as string);
+  if (!model) {
+    return Astro.redirect('/404');
+  }
 } catch (e) {
   error = e as Error;
   console.error('Error fetching model:', e);
-}
-
-if (!model && !error) {
-  return Astro.redirect('/404');
 }
 
 const services = [
