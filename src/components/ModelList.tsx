@@ -86,15 +86,15 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
   }
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-12 mb-12">
       {showTitle && category && (
-        <div className="space-y-6">
+        <div className="space-y-12 mb-12">
           <div className="inline-block">
             <h2 className="text-4xl font-light text-white tracking-[0.2em] border-b-2 border-[#9F8E6A] pb-4">
               {CATEGORY_TITLES[category]}
             </h2>
           </div>
-          <p className="text-gray-400 text-base leading-relaxed tracking-wide max-w-3xl">
+          <p className="text-gray-400 text-base leading-relaxed tracking-wide">
             {CATEGORY_DESCRIPTIONS[category]}
           </p>
         </div>
