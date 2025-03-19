@@ -22,4 +22,6 @@ export type Model = {
     location?: string;
     description?: string;
     whatsapp?: string;
+    is_active: boolean;
+    is_featured: boolean;
   }

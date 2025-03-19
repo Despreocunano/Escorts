@@ -18,6 +18,8 @@ export class ModelsService {
       const { data, error } = await supabase
         .from('models')
         .select('*')
+        .eq('is_active', true)
+        .order('is_featured', { ascending: false })
         .order('name');
 
       if (error) throw error;
@@ -34,6 +36,7 @@ export class ModelsService {
         .from('models')
         .select('*')
         .eq('id', id)
+        .eq('is_active', true)
         .single();
 
       if (error) throw error;
@@ -49,12 +52,14 @@ export class ModelsService {
       const { data, error } = await supabase
         .from('models')
         .select('*')
+        .eq('is_active', true)
         .or(`
           name.ilike.%${query}%,
           description.ilike.%${query}%,
           area.ilike.%${query}%,
           location.ilike.%${query}%
         `)
+        .order('is_featured', { ascending: false })
         .order('name');
 
       if (error) throw error;
@@ -75,7 +80,8 @@ export class ModelsService {
     try {
       let query = supabase
         .from('models')
-        .select('*');
+        .select('*')
+        .eq('is_active', true);
 
       if (filters.hasVideos) {
         query = query.not('videos', 'is', null).gt('videos', '{}');
@@ -89,7 +95,9 @@ export class ModelsService {
         query = query.eq('on_promotion', true);
       }
 
-      const { data, error } = await query.order('name');
+      const { data, error } = await query
+        .order('is_featured', { ascending: false })
+        .order('name');
 
       if (error) throw error;
       return data || [];

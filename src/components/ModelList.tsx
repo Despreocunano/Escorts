@@ -58,7 +58,7 @@ export default function ModelList() {
         <div key={model.id} className="flex flex-col">
           <a 
             href={`/modelos/${model.id}`}
-            className="relative aspect-[3/4] bg-gray-900 rounded-lg mb-4 overflow-hidden"
+            className="relative aspect-[3/4] bg-gray-900 rounded-lg mb-4 overflow-hidden group"
           >
             <img
               src={model.main_image}
@@ -81,6 +81,12 @@ export default function ModelList() {
                 </svg>
               </div>
             )}
+            {model.is_featured && (
+              <div className="absolute top-4 left-4 bg-[#9F8E6A] px-3 py-1 rounded-full z-10">
+                <span className="text-white text-xs font-medium tracking-wider">DESTACADA</span>
+              </div>
+            )}
+            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </a>
           <div className="flex flex-col items-center">
             <h3 className="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors mb-4">{model.name}</h3>
