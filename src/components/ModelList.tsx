@@ -5,6 +5,7 @@ import type { Model, ModelCategory } from '../types/database.types';
 interface ModelListProps {
   category?: ModelCategory;
   showTitle?: boolean;
+  area?: string;
 }
 
 const CATEGORY_TITLES = {
@@ -19,7 +20,7 @@ const CATEGORY_DESCRIPTIONS = {
   'GOLD': 'La categoría Gold presenta una cuidadosa selección de modelos que destacan por su belleza natural y carisma único. Calidad y distinción garantizada en cada encuentro.'
 };
 
-export default function ModelList({ category, showTitle = true }: ModelListProps) {
+export default function ModelList({ category, showTitle = true, area }: ModelListProps) {
   const [models, setModels] = useState<Model[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,9 +30,14 @@ export default function ModelList({ category, showTitle = true }: ModelListProps
     
     async function fetchModels() {
       try {
-        const data = category 
-          ? await modelsService.getModelsByCategory(category)
-          : await modelsService.getAllModels();
+        let data;
+        if (area) {
+          data = await modelsService.getModelsByArea(area);
+        } else if (category) {
+          data = await modelsService.getModelsByCategory(category);
+        } else {
+          data = await modelsService.getAllModels();
+        }
         setModels(data);
       } catch (error) {
         console.error('Error fetching models:', error);
@@ -42,7 +48,7 @@ export default function ModelList({ category, showTitle = true }: ModelListProps
     }
 
     fetchModels();
-  }, [category]);
+  }, [category, area]);
 
   if (loading) {
     return (
@@ -80,7 +86,7 @@ export default function ModelList({ category, showTitle = true }: ModelListProps
   }
 
   return (
-    <div className="space-y-16 mb-12">
+    <div className="space-y-16">
       {showTitle && category && (
         <div className="space-y-6">
           <div className="inline-block">
@@ -88,7 +94,7 @@ export default function ModelList({ category, showTitle = true }: ModelListProps
               {CATEGORY_TITLES[category]}
             </h2>
           </div>
-          <p className="text-gray-400 text-base leading-relaxed tracking-wide">
+          <p className="text-gray-400 text-base leading-relaxed tracking-wide max-w-3xl">
             {CATEGORY_DESCRIPTIONS[category]}
           </p>
         </div>
@@ -122,7 +128,7 @@ export default function ModelList({ category, showTitle = true }: ModelListProps
                 </div>
               )}
               {model.is_featured && (
-                <div className="absolute top-4 left-4 bg-[#9F8E6A]/60 backdrop-blur-md px-3 py-1.5 rounded-full z-10">
+                <div className="absolute top-4 left-4 bg-[#9F8E6A]/30 backdrop-blur-xl px-3 py-1.5 rounded-full z-10 border border-[#9F8E6A]/20">
                   <span className="text-white text-xs font-medium tracking-[0.15em]">DESTACADA</span>
                 </div>
               )}

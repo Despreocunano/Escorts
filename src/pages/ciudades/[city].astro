@@ -1,0 +1,27 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ModelList from '../../components/ModelList';
+import { ModelsService } from '../../services/models.service';
+
+export async function getStaticPaths() {
+  const modelsService = ModelsService.getInstance();
+  const areas = await modelsService.getUniqueAreas();
+  
+  return areas.map(area => ({
+    params: { city: area.toLowerCase().replace(/\s+/g, '-') },
+    props: { area }
+  }));
+}
+
+const { area } = Astro.props;
+const title = `Modelos en ${area}`;
+---
+
+<Layout title={title}>
+  <div class="min-h-screen pt-32 px-6">
+    <div class="max-w-screen-lg mx-auto">
+      <h1 class="text-3xl font-light mb-16 text-center text-white">MODELOS EN {area.toUpperCase()}</h1>
+      <ModelList area={area} showTitle={false} client:load />
+    </div>
+  </div>
+</Layout>

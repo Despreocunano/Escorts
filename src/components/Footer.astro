@@ -1,0 +1,59 @@
+---
+import { ModelsService } from '../services/models.service';
+
+const modelsService = ModelsService.getInstance();
+const areas = await modelsService.getUniqueAreas();
+---
+
+<footer class="bg-[#1A1A1A] py-16 px-6">
+  <div class="max-w-[1200px] mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+      <!-- Cities -->
+      <div>
+        <h3 class="text-white text-sm font-light tracking-[0.2em] mb-6">CIUDADES</h3>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-3">
+          {areas.map(area => (
+            <a 
+              href={`/ciudades/${area.toLowerCase().replace(/\s+/g, '-')}`}
+              class="text-gray-400 text-sm hover:text-white transition-colors"
+            >
+              {area}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div>
+        <h3 class="text-white text-sm font-light tracking-[0.2em] mb-6">CATEGORÍAS</h3>
+        <div class="space-y-3">
+          <a href="/vip" class="block text-gray-400 text-sm hover:text-white transition-colors">VIP</a>
+          <a href="/premium" class="block text-gray-400 text-sm hover:text-white transition-colors">PREMIUM</a>
+          <a href="/gold" class="block text-gray-400 text-sm hover:text-white transition-colors">GOLD</a>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h3 class="text-white text-sm font-light tracking-[0.2em] mb-6">CONTACTO</h3>
+        <div class="space-y-3">
+          <a href="/anunciate" class="block text-gray-400 text-sm hover:text-white transition-colors">Anúnciate</a>
+          <a href="/contacto" class="block text-gray-400 text-sm hover:text-white transition-colors">Contáctanos</a>
+        </div>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h3 class="text-white text-sm font-light tracking-[0.2em] mb-6">LEGAL</h3>
+        <div class="space-y-3">
+          <a href="/terminos" class="block text-gray-400 text-sm hover:text-white transition-colors">Términos y Condiciones</a>
+          <a href="/privacidad" class="block text-gray-400 text-sm hover:text-white transition-colors">Política de Privacidad</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-16 pt-8 border-t border-white/10 text-center">
+      <p class="text-gray-400 text-sm">&copy; {new Date().getFullYear()} AGENCIA. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>

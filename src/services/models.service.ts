@@ -19,7 +19,7 @@ export class ModelsService {
         .from('models')
         .select('*')
         .eq('is_active', true)
-        .order('model_category', { ascending: true }) // VIP first
+        .order('model_category', { ascending: true })
         .order('is_featured', { ascending: false })
         .order('name');
 
@@ -45,6 +45,43 @@ export class ModelsService {
       return data || [];
     } catch (error) {
       console.error('Error fetching models by category:', error);
+      throw error;
+    }
+  }
+
+  async getModelsByArea(area: string): Promise<Model[]> {
+    try {
+      const { data, error } = await supabase
+        .from('models')
+        .select('*')
+        .eq('is_active', true)
+        .eq('area', area)
+        .order('model_category', { ascending: true })
+        .order('is_featured', { ascending: false })
+        .order('name');
+
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching models by area:', error);
+      throw error;
+    }
+  }
+
+  async getUniqueAreas(): Promise<string[]> {
+    try {
+      const { data, error } = await supabase
+        .from('models')
+        .select('area')
+        .eq('is_active', true)
+        .not('area', 'is', null);
+
+      if (error) throw error;
+      
+      const areas = [...new Set(data.map(model => model.area))];
+      return areas.filter(Boolean).sort();
+    } catch (error) {
+      console.error('Error fetching unique areas:', error);
       throw error;
     }
   }
