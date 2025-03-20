@@ -3,9 +3,17 @@ import Layout from '../../layouts/Layout.astro';
 import ModelList from '../../components/ModelList';
 import { ModelsService } from '../../services/models.service';
 
-const modelsService = ModelsService.getInstance();
-const { city } = Astro.params;
-const area = city.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+export async function getStaticPaths() {
+  const modelsService = ModelsService.getInstance();
+  const areas = await modelsService.getUniqueAreas();
+  
+  return areas.map(area => ({
+    params: { city: area.toLowerCase().replace(/\s+/g, '-') },
+    props: { area }
+  }));
+}
+
+const { area } = Astro.props;
 const title = `Scorts en ${area}`;
 ---
 
