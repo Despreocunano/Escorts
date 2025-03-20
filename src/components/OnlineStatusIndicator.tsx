@@ -14,7 +14,7 @@ export default function OnlineStatusIndicator({
   showText = false, 
   className = '' 
 }: OnlineStatusIndicatorProps) {
-  const [isOnline, setIsOnline] = useState<boolean | null>(null);
+  const [isOnline, setIsOnline] = useState(initialIsOnline);
 
   useEffect(() => {
     const channel = supabase
@@ -35,28 +35,11 @@ export default function OnlineStatusIndicator({
       )
       .subscribe();
 
-    // Fetch initial status
-    const fetchStatus = async () => {
-      const { data, error } = await supabase
-        .from('models')
-        .select('is_online')
-        .eq('id', modelId)
-        .single();
-      
-      if (!error && data) {
-        setIsOnline(data.is_online);
-      }
-    };
-
-    fetchStatus();
-
     return () => {
       supabase.removeChannel(channel);
     };
   }, [modelId]);
 
-  // Don't render anything until we have confirmed the status from the server
-  if (isOnline === null) return null;
   if (!isOnline) return null;
 
   return (
