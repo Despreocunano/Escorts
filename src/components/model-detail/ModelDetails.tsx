@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Model } from '../../types/database.types';
-import ModelHeader from './ModelHEader';
+import ModelHeader from './ModelHeader';
 import ModelMeasurements from './ModelMeasurements';
 import ModelServices from './ModelServices';
 import ModelAttributes from './ModelAttributes';
