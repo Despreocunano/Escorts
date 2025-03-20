@@ -14,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 const { area } = Astro.props;
-const title = `Modelos en ${area}`;
+const title = `SCORTS en ${area}`;
 ---
 
 <Layout title={title}>
@@ -23,11 +23,11 @@ const title = `Modelos en ${area}`;
       <div class="space-y-6 mb-16">
         <div class="inline-block">
           <h1 class="text-4xl font-light text-white tracking-[0.2em] border-b-2 border-[#9F8E6A] pb-4">
-            MODELOS EN {area.toUpperCase()}
+            SCORTS EN {area.toUpperCase()}
           </h1>
         </div>
         <p class="text-gray-400 text-base leading-relaxed tracking-wide">
-          Descubre nuestra exclusiva selección de modelos en {area}, donde la belleza y el profesionalismo se unen para crear experiencias inolvidables.
+          Descubre nuestra exclusiva selección de SCORTS en {area}, donde la belleza y el profesionalismo se unen para crear experiencias inolvidables.
         </p>
       </div>
       <ModelList area={area} showTitle={false} client:load />

@@ -62,7 +62,7 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
   if (error === 'fetch_error') {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-400">Error al cargar los modelos. Por favor, intenta nuevamente más tarde.</p>
+        <p className="text-gray-400">Error al cargar los SCORTS. Por favor, intenta nuevamente más tarde.</p>
       </div>
     );
   }
@@ -70,7 +70,7 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
   if (models.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-400">No hay modelos disponibles en esta categoría.</p>
+        <p className="text-gray-400">No hay SCORTS disponibles en esta categoría.</p>
       </div>
     );
   }
