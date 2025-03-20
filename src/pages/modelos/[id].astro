@@ -5,25 +5,26 @@ import ModelProfile from '../../components/model-detail/ModelProfile';
 import ModelDetails from '../../components/model-detail/ModelDetails';
 import ModelGallery from '../../components/model-detail/ModelGallery';
 
+export async function getStaticPaths() {
+  const modelsService = ModelsService.getInstance();
+  const models = await modelsService.getAllModels();
+  
+  return models.map(model => ({
+    params: { id: model.id },
+    props: { model }
+  }));
+}
+
 const { id } = Astro.params;
+const { model } = Astro.props;
 
 // Early return if no ID is provided
 if (!id) {
   return Astro.redirect('/404');
 }
 
-const modelsService = ModelsService.getInstance();
-let model = null;
-
-try {
-  model = await modelsService.getModelById(id);
-  
-  // If model doesn't exist or is not active, redirect to 404
-  if (!model || !model.is_active) {
-    return Astro.redirect('/404');
-  }
-} catch (error) {
-  console.error('Error fetching model:', error);
+// If we somehow got here without a model, redirect to 404
+if (!model) {
   return Astro.redirect('/404');
 }
 ---
