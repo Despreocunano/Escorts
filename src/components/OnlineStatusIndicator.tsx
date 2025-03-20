@@ -14,7 +14,7 @@ export default function OnlineStatusIndicator({
   showText = false, 
   className = '' 
 }: OnlineStatusIndicatorProps) {
-  const [isOnline, setIsOnline] = useState(initialIsOnline);
+  const [isOnline, setIsOnline] = useState<boolean | null>(null);
 
   useEffect(() => {
     const channel = supabase
@@ -22,13 +22,12 @@ export default function OnlineStatusIndicator({
       .on(
         'postgres_changes',
         {
-          event: 'UPDATE',
+          event: '*',
           schema: 'public',
           table: 'models',
-          filter: `id=eq.${modelId}`,
-          columns: ['is_online']
+          filter: `id=eq.${modelId}`
         },
-        (payload) => {
+        (payload: any) => {
           if (payload.new && typeof payload.new.is_online === 'boolean') {
             setIsOnline(payload.new.is_online);
           }
@@ -36,14 +35,28 @@ export default function OnlineStatusIndicator({
       )
       .subscribe();
 
-    // Sync with initial value when it changes
-    setIsOnline(initialIsOnline);
+    // Fetch initial status
+    const fetchStatus = async () => {
+      const { data, error } = await supabase
+        .from('models')
+        .select('is_online')
+        .eq('id', modelId)
+        .single();
+      
+      if (!error && data) {
+        setIsOnline(data.is_online);
+      }
+    };
+
+    fetchStatus();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [modelId, initialIsOnline]);
+  }, [modelId]);
 
+  // Don't render anything until we have confirmed the status from the server
+  if (isOnline === null) return null;
   if (!isOnline) return null;
 
   return (
