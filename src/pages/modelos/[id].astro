@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import { ModelsService } from '../../services/models.service';
 import OnlineStatusIndicator from '../../components/OnlineStatusIndicator';
-export const prerender = false
+
 export async function getStaticPaths() {
   try {
     const modelsService = ModelsService.getInstance();
