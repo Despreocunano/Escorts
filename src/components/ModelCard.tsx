@@ -48,7 +48,7 @@ export default function ModelCard({ model }: ModelCardProps) {
           />
         )}
         {model.is_featured && (
-          <div className="absolute top-4 left-4 bg-[#B91C1C]/30 backdrop-blur-xl px-2 py-1.5 rounded-full z-10 border border-[#B91C1C]/20 flex items-center gap-2">
+          <div className="absolute top-4 left-4 bg-red-800/30 backdrop-blur-xl px-2 py-1.5 rounded-full z-10 border border-red-800/20 flex items-center gap-2">
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               viewBox="0 0 24 24" 
