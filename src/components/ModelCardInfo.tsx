@@ -10,9 +10,17 @@ export default function ModelCardInfo({ model }: ModelCardInfoProps) {
   return (
     <div className="flex flex-col items-center">
       <div className="flex items-center gap-2 mb-4">
-        <h3 className="text-white text-sm tracking-[0.2em] hover:text-gray-300 transition-colors">
-          {model.name}
-        </h3>
+        <div className="flex items-center">
+          <h3 className="text-white text-sm tracking-[0.2em] font-medium hover:text-gray-300 transition-colors">
+            {model.name}
+          </h3>
+          {model.age && (
+            <>
+              <span className="mx-2 text-[#9F8E6A]">•</span>
+              <span className="text-gray-400 text-sm">{model.age} años</span>
+            </>
+          )}
+        </div>
         <OnlineStatusIndicator 
           modelId={model.id} 
           initialIsOnline={model.is_online} 
