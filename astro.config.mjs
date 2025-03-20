@@ -5,8 +5,7 @@ import vercel from '@astrojs/vercel';
 
 export default defineConfig({
   integrations: [tailwind(), react()],
-  output: 'server',
+  output: 'hybrid',
   adapter: vercel({
-    analytics: true,
   }),
 });
