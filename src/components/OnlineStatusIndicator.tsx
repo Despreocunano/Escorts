@@ -14,7 +14,7 @@ export default function OnlineStatusIndicator({
   showText = false, 
   className = '' 
 }: OnlineStatusIndicatorProps) {
-  const [isOnline, setIsOnline] = useState(initialIsOnline);
+  const [isOnline, setIsOnline] = useState<boolean | null>(null);
 
   useEffect(() => {
     const channel = supabase
@@ -55,6 +55,8 @@ export default function OnlineStatusIndicator({
     };
   }, [modelId]);
 
+  // Don't render anything until we have confirmed the status from the server
+  if (isOnline === null) return null;
   if (!isOnline) return null;
 
   return (
