@@ -22,12 +22,13 @@ export default function OnlineStatusIndicator({
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'UPDATE',
           schema: 'public',
           table: 'models',
-          filter: `id=eq.${modelId}`
+          filter: `id=eq.${modelId}`,
+          columns: ['is_online']
         },
-        (payload: any) => {
+        (payload) => {
           if (payload.new && typeof payload.new.is_online === 'boolean') {
             setIsOnline(payload.new.is_online);
           }
@@ -35,10 +36,13 @@ export default function OnlineStatusIndicator({
       )
       .subscribe();
 
+    // Sync with initial value when it changes
+    setIsOnline(initialIsOnline);
+
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [modelId]);
+  }, [modelId, initialIsOnline]);
 
   if (!isOnline) return null;
 
