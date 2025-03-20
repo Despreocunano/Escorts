@@ -11,7 +11,7 @@ export default function ModelCardInfo({ model }: ModelCardInfoProps) {
     <div className="flex flex-col items-center">
       <div className="flex items-center gap-2 mb-4">
         <div className="flex items-center">
-          <h3 className="text-white text-sm tracking-[0.2em] font-medium hover:text-gray-300 transition-colors">
+          <h3 className="text-white text-sm tracking-[0.2em] font-medium hover:text-gray-300 transition-colors truncate max-w-[120px] md:max-w-none">
             {model.name}
           </h3>
           {model.verified && (
@@ -29,7 +29,9 @@ export default function ModelCardInfo({ model }: ModelCardInfoProps) {
           {model.age && (
             <>
               <span className="mx-2 text-red-800">•</span>
-              <span className="text-gray-400 text-sm">{model.age} años</span>
+              <span className="text-gray-400 text-sm">
+                {model.age}<span className="hidden md:inline"> años</span>
+              </span>
             </>
           )}
         </div>
