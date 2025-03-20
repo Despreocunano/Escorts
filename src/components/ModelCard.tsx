@@ -11,7 +11,7 @@ export default function ModelCard({ model }: ModelCardProps) {
   return (
     <div className="flex flex-col">
       <a 
-        href={`/SCORTS/${model.id}`}
+        href={`/modelos/${model.id}`}
         className="relative aspect-[3/4] bg-gray-900 rounded-lg mb-4 overflow-hidden group"
       >
         {model.videos && model.videos.length > 0 ? (
