@@ -5,48 +5,41 @@ import ModelProfile from '../../components/model-detail/ModelProfile';
 import ModelDetails from '../../components/model-detail/ModelDetails';
 import ModelGallery from '../../components/model-detail/ModelGallery';
 
+export async function getStaticPaths() {
+  const modelsService = ModelsService.getInstance();
+  const models = await modelsService.getAllModels();
+  
+  return models.map(model => ({
+    params: { id: model.id },
+    props: { model }
+  }));
+}
+
 const { id } = Astro.params;
+const { model } = Astro.props;
 
 // Early return if no ID is provided
 if (!id) {
   return Astro.redirect('/404');
 }
 
-let model = null;
-let error = null;
-
-try {
-  const modelsService = ModelsService.getInstance();
-  model = await modelsService.getModelById(id);
-} catch (e) {
-  error = e;
-  console.error('Error fetching model:', e);
-}
-
-if (!model && !error) {
+// If we somehow got here without a model, redirect to 404
+if (!model) {
   return Astro.redirect('/404');
 }
 ---
 
-<Layout title={model ? `${model.name} - Scort ${model.model_category} en ${model.area}` : 'Error'}>
-  {error && (
-    <div class="min-h-screen flex items-center justify-center px-6">
-      <p class="text-gray-400">Error al cargar los detalles del modelo.</p>
-    </div>
-  )}
-
-  {model && (
-    <div class="min-h-screen bg-black text-white pt-36 pb-12">
-      <div class="max-w-[1200px] mx-auto px-6">
-        <div class="flex flex-col md:flex-row gap-12 items-start mb-24">
-          <ModelProfile model={model} client:load />
-          <ModelDetails model={model} client:load />
-        </div>
-
-        <ModelGallery model={model} client:load />
+<Layout title={`${model.name} - Scort ${model.model_category} en ${model.area}`}>
+  <div class="min-h-screen bg-black text-white pt-36 pb-12">
+    <div class="max-w-[1200px] mx-auto px-6">
+      <div class="flex flex-col md:flex-row gap-12 items-start mb-24">
+        <ModelProfile model={model} client:load />
+        <ModelDetails model={model} client:load />
       </div>
+
+      <ModelGallery model={model} client:load />
     </div>
-  )}
+  </div>
 </Layout>
 
 <script>
