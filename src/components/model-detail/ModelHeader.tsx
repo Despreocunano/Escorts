@@ -21,7 +21,7 @@ export default function ModelHeader({ model }: ModelHeaderProps) {
       <OnlineStatusIndicator 
         modelId={model.id} 
         initialIsOnline={model.is_online} 
-        showText={true} 
+        showText={true}
       />
     </div>
   );

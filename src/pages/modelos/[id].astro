@@ -4,6 +4,7 @@ import { ModelsService } from '../../services/models.service';
 import ModelProfile from '../../components/model-detail/ModelProfile';
 import ModelDetails from '../../components/model-detail/ModelDetails';
 import ModelGallery from '../../components/model-detail/ModelGallery';
+import OnlineStatusIndicator from '../../components/OnlineStatusIndicator';
 
 export async function getStaticPaths() {
   try {
@@ -48,7 +49,26 @@ if (!model && !error) {
       <div class="max-w-[1200px] mx-auto px-6">
         <div class="flex flex-col md:flex-row gap-12 items-start mb-24">
           <ModelProfile model={model} client:load />
-          <ModelDetails model={model} client:load />
+          <div class="flex-grow">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="flex items-center">
+                <h1 class="text-3xl font-medium">{model.name}</h1>
+                {model.age && (
+                  <>
+                    <span class="mx-3 text-[#9F8E6A] text-3xl">•</span>
+                    <span class="text-gray-400 text-2xl">{model.age} años</span>
+                  </>
+                )}
+              </div>
+              <OnlineStatusIndicator 
+                modelId={model.id} 
+                initialIsOnline={model.is_online} 
+                showText={true}
+                client:load
+              />
+            </div>
+            <ModelDetails model={model} client:load />
+          </div>
         </div>
 
         <ModelGallery model={model} client:load />
