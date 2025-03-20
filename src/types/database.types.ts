@@ -27,5 +27,6 @@ export type Model = {
   is_active: boolean;
   is_featured: boolean;
   is_online: boolean;
+  verified: boolean;
   model_category: ModelCategory;
 }
