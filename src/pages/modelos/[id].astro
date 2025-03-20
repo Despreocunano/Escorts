@@ -5,21 +5,13 @@ import ModelProfile from '../../components/model-detail/ModelProfile';
 import ModelDetails from '../../components/model-detail/ModelDetails';
 import ModelGallery from '../../components/model-detail/ModelGallery';
 
-export async function getStaticPaths() {
-  try {
-    const modelsService = ModelsService.getInstance();
-    const models = await modelsService.getAllModels();
+const { id } = Astro.params;
 
-    return models.map(model => ({
-      params: { id: model.id }
-    }));
-  } catch (error) {
-    console.error('Error fetching model paths:', error);
-    return [];
-  }
+// Early return if no ID is provided
+if (!id) {
+  return Astro.redirect('/404');
 }
 
-const { id } = Astro.params;
 let model = null;
 let error = null;
 
