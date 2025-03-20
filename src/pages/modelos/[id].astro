@@ -52,7 +52,7 @@ const attributes = [
 ];
 ---
 
-<Layout title={model ? `${model.name} - Agencia de SCORTS` : 'Error'}>
+<Layout title={model ? `${model.name} - Scort ${model.model_category} en ${model.area}` : 'Error'}>
   {error && (
     <div class="min-h-screen flex items-center justify-center px-6">
       <p class="text-gray-400">Error al cargar los detalles del modelo.</p>
