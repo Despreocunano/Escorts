@@ -17,18 +17,17 @@ export default function OnlineStatusIndicator({
   const [isOnline, setIsOnline] = useState(initialIsOnline);
 
   useEffect(() => {
-    // Subscribe to real-time changes
     const channel = supabase
-      .channel(`model-status-${modelId}`)
+      .channel(`online-status-${modelId}`)
       .on(
         'postgres_changes',
         {
-          event: 'UPDATE',
+          event: '*',
           schema: 'public',
           table: 'models',
           filter: `id=eq.${modelId}`
         },
-        (payload) => {
+        (payload: any) => {
           if (payload.new && typeof payload.new.is_online === 'boolean') {
             setIsOnline(payload.new.is_online);
           }
@@ -36,7 +35,21 @@ export default function OnlineStatusIndicator({
       )
       .subscribe();
 
-    // Cleanup subscription
+    // Fetch initial status
+    const fetchStatus = async () => {
+      const { data, error } = await supabase
+        .from('models')
+        .select('is_online')
+        .eq('id', modelId)
+        .single();
+      
+      if (!error && data) {
+        setIsOnline(data.is_online);
+      }
+    };
+
+    fetchStatus();
+
     return () => {
       supabase.removeChannel(channel);
     };
