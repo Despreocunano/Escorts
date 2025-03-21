@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function SearchBar() {
   return (
-    <div className="w-full max-w-3xl mb-12">
+    <div className="w-full max-w-3xl mx-auto mb-12">
       <div className="relative">
         <input 
           type="text" 

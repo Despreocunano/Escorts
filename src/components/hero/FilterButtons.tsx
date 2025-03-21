@@ -11,7 +11,7 @@ const filters = [
 export default function FilterButtons() {
   return (
     <div className="w-full overflow-x-auto pb-4 md:pb-0 no-scrollbar">
-      <div className="flex md:flex-wrap md:justify-center gap-3 min-w-min px-0.5">
+      <div className="flex md:flex-wrap md:justify-center gap-3 min-w-min">
         {filters.map(filter => (
           <button
             key={filter.id}
