@@ -53,8 +53,8 @@ export default function ModelDetails({ model }: ModelDetailsProps) {
       </div>
 
       <ModelMeasurements model={model} />
-      <ModelServices />
-      <ModelAttributes />
+      <ModelServices model={model} />
+      <ModelAttributes model={model} />
     </div>
   );
 }

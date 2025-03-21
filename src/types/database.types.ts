@@ -29,4 +29,6 @@ export type Model = {
   is_online: boolean;
   verified: boolean;
   model_category: ModelCategory;
+  atributtes?: string[];
+  services?: string[];
 }
