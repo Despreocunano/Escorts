@@ -18,10 +18,14 @@ import FilterButtons from './FilterButtons';
   </div>
 
   <!-- Content -->
-  <div class="relative z-10 flex-1 flex flex-col items-center justify-center px-6">
-    <HeroTitle client:load />
-    <SearchBar client:load />
-    <FilterButtons client:load />
+  <div class="relative z-10 flex-1 flex flex-col items-center justify-center px-0 md:px-6">
+    <div class="w-full max-w-[1200px] px-6">
+      <HeroTitle client:load />
+      <SearchBar client:load />
+    </div>
+    <div class="w-full max-w-[1200px] px-6">
+      <FilterButtons client:load />
+    </div>
   </div>
 </div>
 

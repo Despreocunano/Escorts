@@ -10,15 +10,17 @@ const filters = [
 
 export default function FilterButtons() {
   return (
-    <div className="flex overflow-x-auto pb-4 md:pb-0 md:flex-wrap md:justify-center gap-3 no-scrollbar">
-      {filters.map(filter => (
-        <button
-          key={filter.id}
-          className="flex-shrink-0 px-6 py-2.5 bg-red-800 hover:bg-[#991B1B] text-white rounded text-sm tracking-wider transition-colors"
-        >
-          {filter.label}
-        </button>
-      ))}
+    <div className="w-full overflow-x-auto pb-4 md:pb-0 no-scrollbar">
+      <div className="flex md:flex-wrap md:justify-center gap-3 min-w-min px-0.5">
+        {filters.map(filter => (
+          <button
+            key={filter.id}
+            className="flex-shrink-0 px-6 py-2.5 bg-red-800 hover:bg-[#991B1B] text-white rounded text-sm tracking-wider transition-colors whitespace-nowrap"
+          >
+            {filter.label}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
