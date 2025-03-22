@@ -4,6 +4,7 @@ import { ModelsService } from '../../services/models.service';
 import ModelProfile from '../../components/model-detail/ModelProfile';
 import ModelDetails from '../../components/model-detail/ModelDetails';
 import ModelGallery from '../../components/model-detail/ModelGallery';
+import ModelDetailContainer from '../../components/model-detail/ModelDetailContainer';
 
 export async function getStaticPaths() {
   const modelsService = ModelsService.getInstance();
@@ -30,58 +31,5 @@ if (!model) {
 ---
 
 <Layout title={`${model.name} - Scort ${model.model_category} en ${model.area}`}>
-  <div class="min-h-screen bg-black text-white pt-36 pb-12">
-    <div class="max-w-[1200px] mx-auto px-6">
-      <div class="flex flex-col md:flex-row gap-12 items-start mb-24">
-        <ModelProfile model={model} client:load />
-        <ModelDetails model={model} client:load />
-      </div>
-
-      <ModelGallery model={model} client:load />
-    </div>
-  </div>
+  <ModelDetailContainer model={model} client:load />
 </Layout>
-
-<script>
-  // Handle video loading and playback
-  document.querySelectorAll('video').forEach((video, index) => {
-    const overlay = document.querySelector(`[data-overlay="${index}"]`);
-    const playButton = document.querySelector(`[data-play-button="${index}"]`);
-    const playIcon = document.querySelector(`[data-play-icon="${index}"]`);
-    const pauseIcon = document.querySelector(`[data-pause-icon="${index}"]`);
-    
-    if (!overlay || !playButton || !playIcon || !pauseIcon) return;
-
-    // Function to toggle play/pause
-    const togglePlayPause = () => {
-      if (video.paused) {
-        video.play();
-        playIcon.classList.add('hidden');
-        pauseIcon.classList.remove('hidden');
-        overlay.classList.add('opacity-0');
-      } else {
-        video.pause();
-        playIcon.classList.remove('hidden');
-        pauseIcon.classList.add('hidden');
-        overlay.classList.remove('opacity-0');
-      }
-    };
-
-    // Add click handlers
-    playButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      togglePlayPause();
-    });
-
-    video.addEventListener('click', () => {
-      togglePlayPause();
-    });
-
-    // Handle video end
-    video.addEventListener('ended', () => {
-      playIcon.classList.remove('hidden');
-      pauseIcon.classList.add('hidden');
-      overlay.classList.remove('opacity-0');
-    });
-  });
-</script>
