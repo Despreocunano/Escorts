@@ -1,12 +1,39 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import type { Model } from '../types/database.types';
 import OnlineStatusIndicator from './OnlineStatusIndicator';
+import { supabase } from '../lib/supabase';
 
 interface ModelCardInfoProps {
   model: Model;
 }
 
 export default function ModelCardInfo({ model }: ModelCardInfoProps) {
+  const [rate, setRate] = useState<number | undefined>(model.rate);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel(`model-rate-${model.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'models',
+          filter: `id=eq.${model.id}`
+        },
+        (payload: any) => {
+          if (payload.new && typeof payload.new.rate !== 'undefined') {
+            setRate(payload.new.rate);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [model.id]);
+
   return (
     <div className="flex flex-col items-center">
       <div className="flex items-center gap-2 mb-4">
@@ -54,7 +81,7 @@ export default function ModelCardInfo({ model }: ModelCardInfoProps) {
               <path fillRule="evenodd" d="M1.5 4.875C1.5 3.839 2.34 3 3.375 3h17.25c1.035 0 1.875.84 1.875 1.875v9.75c0 1.036-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 14.625v-9.75zM8.25 9.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM18.75 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.008zM4.5 9.75A.75.75 0 015.25 9h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H5.25a.75.75 0 01-.75-.75V9.75z" clipRule="evenodd" />
             </svg>
             <p className="text-white text-sm">
-              {model.rate ? `$${model.rate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` : 'Consultar'}
+              {rate ? `$${rate.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}` : 'Consultar'}
             </p>
           </div>
         </div>
