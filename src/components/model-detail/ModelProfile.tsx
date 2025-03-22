@@ -1,6 +1,5 @@
 import React from 'react';
 import type { Model } from '../../types/database.types';
-import OnlineStatusIndicator from '../OnlineStatusIndicator';
 
 interface ModelProfileProps {
   model: Model;
@@ -29,13 +28,6 @@ export default function ModelProfile({ model }: ModelProfileProps) {
             <p className="text-gray-400">Ubicación</p>
             <p className="text-white text-sm">{model.area || 'No especificada'}</p>
           </div>
-        </div>
-        <div className="mt-4 flex justify-center">
-          <OnlineStatusIndicator 
-            modelId={model.id} 
-            initialIsOnline={model.is_online}
-            showText={true}
-          />
         </div>
         {model.whatsapp && (
           <a
