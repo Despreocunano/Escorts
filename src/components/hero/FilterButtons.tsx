@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 
 const FILTER_BUTTONS = [
   'VERIFICADA',
-  'DISPONIBLE AHORA'
+  'DISPONIBLE AHORA',
+  'DESTACADA'
 ];
 
 export default function FilterButtons() {

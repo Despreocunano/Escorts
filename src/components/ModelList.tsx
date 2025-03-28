@@ -77,6 +77,9 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
         case 'DISPONIBLE AHORA':
           filtered = filtered.filter(model => model.is_online);
           break;
+        case 'DESTACADA':
+          filtered = filtered.filter(model => model.is_featured);
+          break;
       }
     }
 
