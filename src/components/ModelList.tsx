@@ -12,8 +12,11 @@ interface ModelListProps {
 
 export default function ModelList({ category, showTitle = true, area }: ModelListProps) {
   const [models, setModels] = useState<Model[]>([]);
+  const [filteredModels, setFilteredModels] = useState<Model[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentFilter, setCurrentFilter] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     const modelsService = ModelsService.getInstance();
@@ -29,6 +32,7 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
           data = await modelsService.getAllModels();
         }
         setModels(data);
+        setFilteredModels(data);
       } catch (error) {
         console.error('Error fetching models:', error);
         setError('fetch_error');
@@ -39,6 +43,53 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
 
     fetchModels();
   }, [category, area]);
+
+  useEffect(() => {
+    // Handle filter changes
+    const handleFilter = (event: CustomEvent<{ filter: string | null }>) => {
+      setCurrentFilter(event.detail.filter);
+    };
+
+    // Handle search changes
+    const handleSearch = (event: CustomEvent<{ searchTerm: string }>) => {
+      setSearchTerm(event.detail.searchTerm);
+    };
+
+    window.addEventListener('modelFilter', handleFilter as EventListener);
+    window.addEventListener('modelSearch', handleSearch as EventListener);
+
+    return () => {
+      window.removeEventListener('modelFilter', handleFilter as EventListener);
+      window.removeEventListener('modelSearch', handleSearch as EventListener);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Apply filters and search
+    let filtered = [...models];
+
+    // Apply attribute filter
+    if (currentFilter) {
+      filtered = filtered.filter(model => 
+        model.atributtes?.some(attr => attr.toUpperCase() === currentFilter)
+      );
+    }
+
+    // Apply search
+    if (searchTerm) {
+      const term = searchTerm.toUpperCase();
+      filtered = filtered.filter(model => 
+        model.name.toUpperCase().includes(term) ||
+        model.description?.toUpperCase().includes(term) ||
+        model.area?.toUpperCase().includes(term) ||
+        model.location?.toUpperCase().includes(term) ||
+        model.atributtes?.some(attr => attr.toUpperCase().includes(term)) ||
+        model.services?.some(service => service.toUpperCase().includes(term))
+      );
+    }
+
+    setFilteredModels(filtered);
+  }, [models, currentFilter, searchTerm]);
 
   if (loading) {
     return (
@@ -67,19 +118,25 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
     );
   }
 
-  if (models.length === 0) {
+  // Only show the section if there are models to display
+  if (filteredModels.length === 0 && category) {
+    return null;
+  }
+
+  // Show global no results message only when not filtering by category
+  if (filteredModels.length === 0 && !category) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-400">No hay SCORTS disponibles en esta categoría.</p>
+        <p className="text-gray-400">No hay SCORTS disponibles con los filtros seleccionados.</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-12 mt-12">
+    <div className="space-y-12">
       <ModelListHeader category={category} showTitle={showTitle} />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {models.map((model) => (
+        {filteredModels.map((model) => (
           <ModelCard key={model.id} model={model} />
         ))}
       </div>

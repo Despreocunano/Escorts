@@ -103,6 +103,28 @@ export class ModelsService {
     }
   }
 
+  async getSearchSuggestions(): Promise<{ attributes: string[], services: string[] }> {
+    try {
+      const models = await this.getAllModels();
+      
+      const uniqueAttributes = new Set<string>();
+      const uniqueServices = new Set<string>();
+      
+      models.forEach(model => {
+        model.atributtes?.forEach(attr => uniqueAttributes.add(attr.toUpperCase()));
+        model.services?.forEach(service => uniqueServices.add(service.toUpperCase()));
+      });
+      
+      return {
+        attributes: Array.from(uniqueAttributes).sort(),
+        services: Array.from(uniqueServices).sort()
+      };
+    } catch (error) {
+      console.error('Error fetching search suggestions:', error);
+      throw error;
+    }
+  }
+
   async searchModels(query: string): Promise<Model[]> {
     try {
       const { data, error } = await supabase
