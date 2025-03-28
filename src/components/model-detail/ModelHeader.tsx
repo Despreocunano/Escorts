@@ -25,7 +25,7 @@ export default function ModelHeader({ model }: ModelHeaderProps) {
             </svg>
           )}
         </div>
-        <div className="flex flex-col md:flex-row md:items-center gap-3">
+        <div className="flex items-center gap-3">
           {model.age && (
             <div className="flex items-center">
               <span className="text-red-800 text-3xl hidden md:inline mx-3">•</span>
