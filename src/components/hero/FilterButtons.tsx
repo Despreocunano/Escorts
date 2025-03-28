@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 
 const FILTER_BUTTONS = [
-  'CARA VISIBLE',
-  'DISPONIBLE AHORA',
-  'EN PROMOCIÓN',
-  'INDEPENDIENTE',
-  'VERIFICADA'
+  'VERIFICADA',
+  'DISPONIBLE AHORA'
 ];
 
 export default function FilterButtons() {

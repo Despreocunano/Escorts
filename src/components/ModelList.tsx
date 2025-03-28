@@ -68,11 +68,16 @@ export default function ModelList({ category, showTitle = true, area }: ModelLis
     // Apply filters and search
     let filtered = [...models];
 
-    // Apply attribute filter
+    // Apply filter
     if (currentFilter) {
-      filtered = filtered.filter(model => 
-        model.atributtes?.some(attr => attr.toUpperCase() === currentFilter)
-      );
+      switch (currentFilter) {
+        case 'VERIFICADA':
+          filtered = filtered.filter(model => model.verified);
+          break;
+        case 'DISPONIBLE AHORA':
+          filtered = filtered.filter(model => model.is_online);
+          break;
+      }
     }
 
     // Apply search
