@@ -43,19 +43,32 @@ export default function SearchBar() {
     }
 
     const term = searchTerm.toUpperCase();
-    const attributeSuggestions = allSuggestions.attributes.filter(attr => 
-      attr.includes(term)
-    );
-    const serviceSuggestions = allSuggestions.services.filter(service => 
-      service.includes(term)
-    );
+    
+    // Combine all available suggestions
+    const allAvailableSuggestions = [
+      ...allSuggestions.attributes,
+      ...allSuggestions.services
+    ];
 
-    // Combine and limit to 5 suggestions
-    const newSuggestions = [...new Set([...attributeSuggestions, ...serviceSuggestions])]
-      .slice(0, 5);
+    // Filter and sort suggestions
+    const filteredSuggestions = allAvailableSuggestions
+      .filter(suggestion => suggestion.includes(term))
+      .sort((a, b) => {
+        // Exact matches first
+        if (a === term && b !== term) return -1;
+        if (b === term && a !== term) return 1;
+        // Starts with term next
+        if (a.startsWith(term) && !b.startsWith(term)) return -1;
+        if (b.startsWith(term) && !a.startsWith(term)) return 1;
+        // Alphabetical order for the rest
+        return a.localeCompare(b);
+      });
 
-    setSuggestions(newSuggestions);
-    setShowSuggestions(newSuggestions.length > 0 && document.activeElement === inputRef.current);
+    // Remove duplicates and limit to 5
+    const uniqueSuggestions = [...new Set(filteredSuggestions)].slice(0, 5);
+
+    setSuggestions(uniqueSuggestions);
+    setShowSuggestions(uniqueSuggestions.length > 0 && document.activeElement === inputRef.current);
   }, [searchTerm, allSuggestions]);
 
   const handleSearch = (e: React.FormEvent) => {
