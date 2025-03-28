@@ -50,20 +50,30 @@ export default function SearchBar() {
       service.includes(term)
     );
 
-    const newSuggestions = [...new Set([...attributeSuggestions, ...serviceSuggestions])];
+    // Combine and limit to 5 suggestions
+    const newSuggestions = [...new Set([...attributeSuggestions, ...serviceSuggestions])]
+      .slice(0, 5);
+
     setSuggestions(newSuggestions);
     setShowSuggestions(newSuggestions.length > 0 && document.activeElement === inputRef.current);
   }, [searchTerm, allSuggestions]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setShowSuggestions(false);
-    if (inputRef.current) {
-      inputRef.current.blur();
+    
+    if (showSuggestions && suggestions.length > 0) {
+      // If suggestions are visible, use the first suggestion
+      handleSuggestionClick(suggestions[0]);
+    } else {
+      // Otherwise, perform search with current search term
+      setShowSuggestions(false);
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
+      window.dispatchEvent(new CustomEvent('modelSearch', { 
+        detail: { searchTerm } 
+      }));
     }
-    window.dispatchEvent(new CustomEvent('modelSearch', { 
-      detail: { searchTerm } 
-    }));
   };
 
   const handleSuggestionClick = (suggestion: string) => {
