@@ -22,9 +22,9 @@ export default function ModelListHeader({ category, showTitle }: ModelListHeader
   if (!showTitle || !category) return null;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pt-8">
       <div className="inline-block">
-        <h2 className="text-4xl font-light text-white tracking-[0.2em] border-b-2 border-red-800 pb-4">
+        <h2 className="text-4xl font-light text-white tracking-[0.2em] border-b-2 border-red-800">
           {CATEGORY_TITLES[category]}
         </h2>
       </div>
