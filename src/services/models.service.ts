@@ -78,7 +78,7 @@ export class ModelsService {
 
       if (error) throw error;
       
-      const areas = [...new Set(data.map(model => model.area))];
+      const areas = Array.from(new Set(data.map(model => model.area)));
       return areas.filter(Boolean).sort();
     } catch (error) {
       console.error('Error fetching unique areas:', error);
