@@ -23,7 +23,17 @@ export default function ModelCard({ model }: ModelCardProps) {
               muted
               loop
               playsInline
+              preload="metadata"
               poster={model.main_image}
+              onMouseOver={(e) => {
+                const video = e.target as HTMLVideoElement;
+                video.play().catch(err => console.log('Video play failed:', err));
+              }}
+              onMouseOut={(e) => {
+                const video = e.target as HTMLVideoElement;
+                video.pause();
+                video.currentTime = 0;
+              }}
             />
             <div className="absolute top-4 right-4 bg-black/50 p-2 rounded-full z-10 backdrop-blur-sm">
               <svg 
@@ -45,6 +55,7 @@ export default function ModelCard({ model }: ModelCardProps) {
             src={model.main_image}
             alt={model.name}
             className="h-full w-full object-cover"
+            loading="lazy"
           />
         )}
         {model.is_featured && (
