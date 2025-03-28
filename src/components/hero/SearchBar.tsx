@@ -62,31 +62,27 @@ export default function SearchBar() {
         if (b.startsWith(term) && !a.startsWith(term)) return 1;
         // Alphabetical order for the rest
         return a.localeCompare(b);
-      });
+      })
+      // Remove duplicates
+      .filter((item, index, self) => self.indexOf(item) === index)
+      // Limit to 5 suggestions
+      .slice(0, 5);
 
-    // Remove duplicates and limit to 5
-    const uniqueSuggestions = [...new Set(filteredSuggestions)].slice(0, 5);
-
-    setSuggestions(uniqueSuggestions);
-    setShowSuggestions(uniqueSuggestions.length > 0 && document.activeElement === inputRef.current);
+    setSuggestions(filteredSuggestions);
+    setShowSuggestions(filteredSuggestions.length > 0 && document.activeElement === inputRef.current);
   }, [searchTerm, allSuggestions]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (showSuggestions && suggestions.length > 0) {
-      // If suggestions are visible, use the first suggestion
-      handleSuggestionClick(suggestions[0]);
-    } else {
-      // Otherwise, perform search with current search term
-      setShowSuggestions(false);
-      if (inputRef.current) {
-        inputRef.current.blur();
-      }
-      window.dispatchEvent(new CustomEvent('modelSearch', { 
-        detail: { searchTerm } 
-      }));
+    // Always search with the current search term
+    setShowSuggestions(false);
+    if (inputRef.current) {
+      inputRef.current.blur();
     }
+    window.dispatchEvent(new CustomEvent('modelSearch', { 
+      detail: { searchTerm } 
+    }));
   };
 
   const handleSuggestionClick = (suggestion: string) => {
