@@ -44,10 +44,10 @@ export default function ModelDetails({ model }: ModelDetailsProps) {
             <p className="text-white">{model.schedule}</p>
           </div>
         )}
-        {model.location && (
+        {model.city && (
           <div>
             <p className="text-gray-400 text-sm mb-1">Lugar</p>
-            <p className="text-white">{model.location}</p>
+            <p className="text-white">{model.city}</p>
           </div>
         )}
       </div>

@@ -21,7 +21,7 @@ export type Model = {
   weight?: number;
   skin_tone?: string;
   schedule?: string;
-  location?: string;
+  city?: string;
   description?: string;
   whatsapp?: string;
   is_active: boolean;
